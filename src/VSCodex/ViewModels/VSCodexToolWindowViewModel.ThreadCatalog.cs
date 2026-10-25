@@ -17,8 +17,17 @@ public sealed partial class VSCodexToolWindowViewModel
     /// <summary>Names protocol text members and content kinds.</summary>
     private const string TextPropertyName = "text";
 
+    /// <summary>Seconds between background Codex thread catalog refreshes.</summary>
+    private const int ThreadSyncSeconds = 45;
+
     /// <summary>Stores whether archived history is visible.</summary>
     private bool _includeArchivedSessions;
+
+    /// <summary>Guards against overlapping catalog refreshes.</summary>
+    private bool _isThreadSyncRunning;
+
+    /// <summary>Refreshes the shared Codex thread catalog while the tool window is open.</summary>
+    private DispatcherTimer? _threadSyncTimer;
 
     /// <summary>Gets the command that opens the native active-document diff.</summary>
     public ReactiveCommand<Unit, Unit> ReviewActiveFileCommand { get; private set; }
@@ -50,6 +59,26 @@ public sealed partial class VSCodexToolWindowViewModel
     private IThreadCatalogClient ThreadCatalog => _codex as IThreadCatalogClient
         ?? throw new NotSupportedException("线程管理需要 Codex 应用服务器传输方式。");
 
+    /// <summary>Starts background synchronization with the shared Codex thread catalog.</summary>
+    public void StartThreadAutoSync()
+    {
+        if (_threadSyncTimer is null)
+        {
+            _threadSyncTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(ThreadSyncSeconds) };
+            _threadSyncTimer.Tick += OnThreadSyncTick;
+        }
+
+        if (!_threadSyncTimer.IsEnabled)
+        {
+            _threadSyncTimer.Start();
+        }
+
+        OnThreadSyncTick(this, EventArgs.Empty);
+    }
+
+    /// <summary>Stops background synchronization with the shared Codex thread catalog.</summary>
+    public void StopThreadAutoSync() => _threadSyncTimer?.Stop();
+
     /// <summary>Opens the native editor comparison without changing repository contents.</summary>
     /// <returns>A task that completes when the operation finishes.</returns>
     private async Task ReviewActiveFileAsync()
@@ -65,10 +94,24 @@ public sealed partial class VSCodexToolWindowViewModel
         }
     }
 
-    /// <summary>Refreshes the catalog without overwriting local transcript or preferences.</summary>
+    /// <summary>Refreshes the catalog so conversations created by the desktop app or another client appear automatically.</summary>
     /// <returns>A task that completes when the operation finishes.</returns>
     private async Task RefreshThreadsAsync()
     {
+        await RefreshThreadsAsync(silent: false);
+    }
+
+    /// <summary>Refreshes the shared Codex thread catalog.</summary>
+    /// <param name="silent">Whether status updates are suppressed for background synchronization.</param>
+    /// <returns>A task that completes when the operation finishes.</returns>
+    private async Task RefreshThreadsAsync(bool silent)
+    {
+        if (_isThreadSyncRunning)
+        {
+            return;
+        }
+
+        _isThreadSyncRunning = true;
         try
         {
             SaveCurrentSessionIfNeeded();
@@ -79,15 +122,44 @@ public sealed partial class VSCodexToolWindowViewModel
             }
 
             RefreshHistory();
-            Status = "已刷新 Codex 线程历史";
+            if (!silent)
+            {
+                Status = "已刷新 Codex 线程历史";
+            }
         }
         catch (Exception exception)
         {
-            Status = $"无法刷新 Codex 线程：{exception.Message}";
+            if (!silent)
+            {
+                Status = $"无法刷新 Codex 线程：{exception.Message}";
+            }
+        }
+        finally
+        {
+            _isThreadSyncRunning = false;
         }
     }
 
-    /// <summary>Imports a catalog page group for the current workspace.</summary>
+    /// <summary>Runs one background catalog refresh so desktop conversations show up without a manual refresh.</summary>
+    /// <param name="sender">The timer that raised the tick.</param>
+    /// <param name="e">The event arguments.</param>
+    private void OnThreadSyncTick(object? sender, EventArgs e)
+    {
+        if (_isThreadSyncRunning || RefreshThreadsCommand is null)
+        {
+            return;
+        }
+
+        var command = (System.Windows.Input.ICommand)RefreshThreadsCommand;
+        if (!command.CanExecute(null))
+        {
+            return;
+        }
+
+        TaskObserver.FireAndForget(RefreshThreadsAsync(silent: true));
+    }
+
+    /// <summary>Imports a catalog page group for every Codex conversation.</summary>
     /// <param name="archived">The archive state.</param>
     /// <returns>A task that completes when the operation finishes.</returns>
     private async Task ImportThreadCatalogAsync(bool archived)
@@ -102,35 +174,40 @@ public sealed partial class VSCodexToolWindowViewModel
         List<CodexSessionDocument> existing = _sessionStore.LoadRecent(int.MaxValue).ToList();
         foreach (JObject thread in catalog["data"]?.OfType<JObject>() ?? Enumerable.Empty<JObject>())
         {
-            ImportThreadMetadata(thread, archived, workspaceRoot, existing);
+            ImportThreadMetadata(thread, archived, existing);
         }
     }
 
-    /// <summary>Imports metadata for a thread belonging to the captured workspace.</summary>
+    /// <summary>Imports metadata for every Codex conversation, including ones created by the desktop app in another folder.</summary>
     /// <param name="thread">The protocol metadata.</param>
     /// <param name="archived">The archive state.</param>
-    /// <param name="workspaceRoot">The captured workspace root.</param>
     /// <param name="existing">The existing local documents.</param>
-    private void ImportThreadMetadata(JObject thread, bool archived, string workspaceRoot, List<CodexSessionDocument> existing)
+    private void ImportThreadMetadata(JObject thread, bool archived, List<CodexSessionDocument> existing)
     {
         string id = thread.Value<string>(IdentifierPropertyName) ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(id) || !SameWorkspacePath(thread.Value<string>("cwd"), workspaceRoot))
+        if (string.IsNullOrWhiteSpace(id))
         {
             return;
         }
 
-        CodexSessionDocument session = existing.FirstOrDefault(x => x.ThreadId == id) ?? _sessionStore.Create();
-        session.ThreadId = id;
-        session.IsArchived = archived;
-        if (string.IsNullOrWhiteSpace(session.Title))
+        string title = thread.Value<string>("name") ?? thread.Value<string>("preview") ?? id;
+        long? updatedSeconds = thread["updatedAt"]?.Type == JTokenType.Integer ? thread.Value<long>("updatedAt") : null;
+        WorkspaceIdentity identity = _workspace.CurrentWorkspaceIdentity;
+        CodexSessionDocument? known = existing.FirstOrDefault(x => x.ThreadId == id);
+        if (IsCatalogEntryUnchanged(known, archived, title, updatedSeconds, identity))
         {
-            session.Title = thread.Value<string>("name") ?? thread.Value<string>("preview") ?? id;
+            return;
         }
 
-        ApplyWorkspaceToSession(session, _workspace.CurrentWorkspaceIdentity);
-        if (thread["updatedAt"]?.Type == JTokenType.Integer)
+        CodexSessionDocument session = known ?? _sessionStore.Create();
+        session.ThreadId = id;
+        session.IsArchived = archived;
+        session.Title = title;
+
+        ApplyWorkspaceToSession(session, identity);
+        if (updatedSeconds is not null)
         {
-            session.Updated = DateTimeOffset.FromUnixTimeSeconds(thread.Value<long>("updatedAt"));
+            session.Updated = DateTimeOffset.FromUnixTimeSeconds(updatedSeconds.Value);
         }
 
         _sessionStore.Save(session, preserveUpdated: true);

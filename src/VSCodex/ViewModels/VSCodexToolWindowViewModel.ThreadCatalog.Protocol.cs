@@ -7,12 +7,32 @@ namespace VSCodex.ViewModels;
 /// <summary>Reads display text from public protocol history.</summary>
 public sealed partial class VSCodexToolWindowViewModel
 {
-    /// <summary>Compares catalog working directories without accepting prefix matches.</summary>
-    /// <param name="left">The catalog directory.</param>
-    /// <param name="right">The current directory.</param>
-    /// <returns>Whether both identify the same directory.</returns>
-    private static bool SameWorkspacePath(string? left, string right) =>
-        !string.IsNullOrWhiteSpace(left) && string.Equals(left!.TrimEnd('\\', '/'), right.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+    /// <summary>Determines whether an already imported conversation still matches the catalog entry.</summary>
+    /// <param name="known">The imported document, if any.</param>
+    /// <param name="archived">The archive state.</param>
+    /// <param name="title">The catalog title.</param>
+    /// <param name="updatedSeconds">The catalog update stamp.</param>
+    /// <param name="identity">The current workspace identity.</param>
+    /// <returns><see langword="true"/> when no local rewrite is required.</returns>
+    private static bool IsCatalogEntryUnchanged(
+        CodexSessionDocument? known,
+        bool archived,
+        string title,
+        long? updatedSeconds,
+        WorkspaceIdentity identity)
+    {
+        if (known is null || known.IsArchived != archived || !string.Equals(known.Title, title, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        if (!string.Equals(known.WorkspaceIdentityId, identity?.Id ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return updatedSeconds is null || known.Updated.ToUnixTimeSeconds() == updatedSeconds.Value;
+    }
 
     /// <summary>Imports user and assistant text while retaining opaque server history on the server.</summary>
     /// <param name="session">The local display document.</param>

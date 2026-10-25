@@ -80,9 +80,11 @@ public partial class VSCodexToolWindowControl : UserControl
         {
             AttachViewModel(ViewModel);
             ApplyVisualStudioThemeToComboBoxes();
+            ViewModel?.StartThreadAutoSync();
         };
         Unloaded += (_, _) =>
         {
+            ViewModel?.StopThreadAutoSync();
             AttachViewModel(null);
             FinishPromptResizeSafely(commit: false);
         };
