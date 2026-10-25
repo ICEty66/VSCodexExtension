@@ -3,6 +3,7 @@ import readline from 'node:readline';
 import { execFileSync, spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
+import os from 'node:os';
 import path from 'node:path';
 
 let CodexCtor;
@@ -922,11 +923,90 @@ async function manageThread(request) {
         cursors.add(cursor);
       }
     } while (cursor !== null);
-    return { data: [...threads.values()] };
+    const merged = [...threads.values()];
+    try {
+      for (const extra of await listLocalThreads(request.archived === true)) {
+        if (extra?.id && !threads.has(extra.id)) merged.push(extra);
+      }
+    } catch { /* the local store is optional */ }
+    return { data: merged };
   }
   if (typeof request.threadId !== 'string' || !request.threadId.trim()) throw new Error('A Codex thread identifier is required.');
   const params = { threadId: request.threadId };
-  if (request.command === 'readThread') return await send('thread/read', { ...params, includeTurns: true });
+  if (request.command === 'readThread') {
+    try {
+      return await send('thread/read', { ...params, includeTurns: true });
+    } catch (error) {
+      const local = await readLocalThreadFallback(request.threadId, error);
+      if (local) return local;
+      throw error;
+    }
+  }
   if (request.command === 'forkThread') return await send('thread/fork', params);
   return await send(request.archived === true ? 'thread/archive' : 'thread/unarchive', params);
+}
+
+// The desktop client migrates conversations into the paginated store and later prunes their rollout
+// files. The app-server can only read a thread that still has a rollout, so fall back to the local
+// sqlite history that both clients share. Requires the built-in node:sqlite (Node 22.5+).
+function codexHomePath() {
+  const configured = process.env.CODEX_HOME;
+  return configured && configured.trim() ? configured : path.join(os.homedir(), '.codex');
+}
+
+async function readLocalDatabase(file) {
+  const { DatabaseSync } = await import('node:sqlite');
+  return new DatabaseSync(file, { readOnly: true });
+}
+
+async function listLocalThreads(archived) {
+  const stateDatabase = path.join(codexHomePath(), 'state_5.sqlite');
+  if (!existsSync(stateDatabase)) return [];
+  const database = await readLocalDatabase(stateDatabase);
+  try {
+    const rows = database.prepare(
+      "select id, coalesce(nullif(name,''), nullif(preview,''), nullif(first_user_message,''), id) as title, updated_at, cwd, archived from threads where coalesce(thread_source,'') <> 'subagent' and archived = ?"
+    ).all(archived ? 1 : 0);
+    return rows.map((row) => ({
+      id: row.id,
+      name: row.title,
+      cwd: row.cwd,
+      updatedAt: Number(row.updated_at),
+      archived: Number(row.archived) === 1
+    }));
+  } finally {
+    database.close();
+  }
+}
+
+async function readLocalThreadFallback(threadId, error) {
+  const message = String(error?.message ?? error ?? '');
+  if (!/no rollout found|thread not loaded/i.test(message)) return null;
+  try {
+    return await readLocalThread(threadId);
+  } catch {
+    return null;
+  }
+}
+
+async function readLocalThread(threadId) {
+  const historyDatabase = path.join(codexHomePath(), 'thread_history_1.sqlite');
+  if (!existsSync(historyDatabase)) return null;
+  const database = await readLocalDatabase(historyDatabase);
+  try {
+    const rows = database.prepare(
+      "select item_json from thread_items where thread_id = ? and item_type in ('userMessage','agentMessage') order by rollout_ordinal asc"
+    ).all(threadId);
+    if (rows.length === 0) return null;
+    const items = [];
+    for (const row of rows) {
+      try {
+        items.push(JSON.parse(row.item_json));
+      } catch { /* skip unreadable rows */ }
+    }
+    if (items.length === 0) return null;
+    return { thread: { id: threadId, turns: [{ id: threadId + '-local', items }] } };
+  } finally {
+    database.close();
+  }
 }
