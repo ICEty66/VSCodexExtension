@@ -49,7 +49,7 @@ public sealed class ManagedWorktree
     {
         if (IsArchived)
         {
-            return "Archived (recoverable checkout)";
+            return "已归档（可恢复的检出）";
         }
 
         if (IsPinned)
@@ -59,9 +59,9 @@ public sealed class ManagedWorktree
 
         if (IsLocked)
         {
-            return "Protected by Git lock";
+            return "受 Git 锁定保护";
         }
 
-        return IsManaged ? "Managed checkout" : "External or primary checkout (protected)";
+        return IsManaged ? "托管检出" : "外部或主检出（受保护）";
     }
 }

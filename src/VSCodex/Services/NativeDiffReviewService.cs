@@ -25,14 +25,14 @@ public sealed class NativeDiffReviewService
         string file = dte?.ActiveDocument?.FullName ?? string.Empty;
         if (string.IsNullOrWhiteSpace(file) || !File.Exists(file))
         {
-            throw new InvalidOperationException("Open a saved repository file in the Visual Studio editor first.");
+            throw new InvalidOperationException("请先在 Visual Studio 编辑器中打开一个已保存的仓库文件。");
         }
 
         string root = Path.GetFullPath(workspaceRoot).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
         string fullPath = Path.GetFullPath(file);
         if (!fullPath.StartsWith(root, StringComparison.OrdinalIgnoreCase))
         {
-            throw new InvalidOperationException("The active file is outside the current workspace.");
+            throw new InvalidOperationException("当前活动文件不在该工作区中。");
         }
 
         string relative = fullPath.Substring(root.Length).Replace('\\', '/');
@@ -44,14 +44,14 @@ public sealed class NativeDiffReviewService
             await WriteHeadSnapshotAsync(root, relative, snapshot);
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var difference = provider.GetService(typeof(SVsDifferenceService)) as IVsDifferenceService
-                ?? throw new NotSupportedException("The Visual Studio difference service is unavailable.");
+                ?? throw new NotSupportedException("Visual Studio 差异比较服务不可用。");
             _ = difference.OpenComparisonWindow2(
                 snapshot,
                 fullPath,
-                "VSCodex review: {1}",
-                "Compare HEAD with the current editor document",
+                "VSCodex 审阅：{1}",
+                "将 HEAD 与当前编辑器文档比较",
                 "HEAD",
-                "Working document",
+                "工作文档",
                 string.Empty,
                 string.Empty,
                 (uint)__VSDIFFSERVICEOPTIONS.VSDIFFOPT_LeftFileIsTemporary);
@@ -85,7 +85,7 @@ public sealed class NativeDiffReviewService
             RedirectStandardOutput = true,
             RedirectStandardError = true
         };
-        using var process = System.Diagnostics.Process.Start(start) ?? throw new InvalidOperationException("Git could not be started.");
+        using var process = System.Diagnostics.Process.Start(start) ?? throw new InvalidOperationException("无法启动 Git。");
         Task<string> error = process.StandardError.ReadToEndAsync();
         using (var output = File.Create(snapshot))
         {
@@ -99,6 +99,6 @@ public sealed class NativeDiffReviewService
             return;
         }
 
-        throw new InvalidOperationException($"Cannot read this file from Git HEAD. Save and commit new files before reviewing their baseline. {detail.Trim()}");
+        throw new InvalidOperationException($"无法从 Git HEAD 读取此文件。审阅新文件的基线前，请先保存并提交。{detail.Trim()}");
     }
 }

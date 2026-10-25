@@ -30,20 +30,20 @@ internal static class VisualStudioMenuIntegrationService
     private static readonly MenuCommandSpec[] CoreActions =
     {
         OpenToolWindow,
-        new("VSCodex.Settings", "VSCodex Settings", CodexCommandIds.OpenOptionsCommandId),
-        new("VSCodex.AddToChat", "Add to VSCodex Chat", CodexCommandIds.AskCodexCommandId),
+        new("VSCodex.Settings", "VSCodex 设置", CodexCommandIds.OpenOptionsCommandId),
+        new("VSCodex.AddToChat", "添加到 VSCodex 对话", CodexCommandIds.AskCodexCommandId),
         new("VSCodex.Explain", "Explain", CodexCommandIds.ExplainSelectionCommandId),
-        new("VSCodex.FixWithVSCodex", "Fix with VSCodex", CodexCommandIds.FixActiveErrorCommandId),
-        new("VSCodex.FixSelection", "Fix Selection", CodexCommandIds.FixSelectionCommandId),
-        new("VSCodex.Review", "Review Selection", CodexCommandIds.ReviewSelectionCommandId),
-        new("VSCodex.Optimize", "Optimize Selection", CodexCommandIds.OptimizeSelectionCommandId),
-        new("VSCodex.GenerateComments", "Generate Comments", CodexCommandIds.GenerateDocsCommandId),
-        new("VSCodex.GenerateTests", "Generate Tests", CodexCommandIds.CreateTestFromSelectionCommandId),
-        new("VSCodex.Debug", "Debug With VSCodex", CodexCommandIds.DebugWithCodexCommandId),
-        new("VSCodex.FixActiveException", "Fix Active Exception", CodexCommandIds.FixActiveExceptionCommandId),
-        new("VSCodex.FixTestFailure", "Fix Test Failure", CodexCommandIds.FixTestFailureCommandId),
-        new("VSCodex.CreatePlan", "Create Agent Plan", CodexCommandIds.CreatePlanCommandId),
-        new("VSCodex.ReactiveMemorySetup", "VSCodex ReactiveMemory Setup", CodexCommandIds.ConfigureMemoryCommandId)
+        new("VSCodex.FixWithVSCodex", "使用 VSCodex 修复", CodexCommandIds.FixActiveErrorCommandId),
+        new("VSCodex.FixSelection", "修复选中内容", CodexCommandIds.FixSelectionCommandId),
+        new("VSCodex.Review", "审阅选中内容", CodexCommandIds.ReviewSelectionCommandId),
+        new("VSCodex.Optimize", "优化选中内容", CodexCommandIds.OptimizeSelectionCommandId),
+        new("VSCodex.GenerateComments", "生成注释", CodexCommandIds.GenerateDocsCommandId),
+        new("VSCodex.GenerateTests", "生成测试", CodexCommandIds.CreateTestFromSelectionCommandId),
+        new("VSCodex.Debug", "使用 VSCodex 调试", CodexCommandIds.DebugWithCodexCommandId),
+        new("VSCodex.FixActiveException", "修复活动异常", CodexCommandIds.FixActiveExceptionCommandId),
+        new("VSCodex.FixTestFailure", "修复测试失败", CodexCommandIds.FixTestFailureCommandId),
+        new("VSCodex.CreatePlan", "创建智能体计划", CodexCommandIds.CreatePlanCommandId),
+        new("VSCodex.ReactiveMemorySetup", "VSCodex ReactiveMemory 配置", CodexCommandIds.ConfigureMemoryCommandId)
     };
 
     /// <summary>Stores whether runtime menus have been installed.</summary>
@@ -143,7 +143,7 @@ internal static class VisualStudioMenuIntegrationService
     private static bool AddViewMenuEntries(DTE dte, object menuBar)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
-        var viewMenu = FindControlByCaption(menuBar, "View");
+        var viewMenu = FindControlByCaption(menuBar, "视图", "View");
         if (viewMenu is null)
         {
             return false;
@@ -167,7 +167,7 @@ internal static class VisualStudioMenuIntegrationService
             return;
         }
 
-        var viewPopup = EnsurePopup(viewCommandBar, "VSCodex Actions");
+        var viewPopup = EnsurePopup(viewCommandBar, "VSCodex 操作");
         if (viewPopup is null)
         {
             return;
@@ -187,7 +187,7 @@ internal static class VisualStudioMenuIntegrationService
             return;
         }
 
-        var otherWindowsPopup = FindControlByCaption(viewCommandBar, "Other Windows");
+        var otherWindowsPopup = FindControlByCaption(viewCommandBar, "其他窗口", "Other Windows");
         if (otherWindowsPopup is null)
         {
             return;
@@ -203,7 +203,7 @@ internal static class VisualStudioMenuIntegrationService
     private static void AddToolsMenuEntries(DTE dte, object menuBar)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
-        var toolsMenu = FindControlByCaption(menuBar, "Tools");
+        var toolsMenu = FindControlByCaption(menuBar, "工具", "Tools");
         if (toolsMenu is null)
         {
             return;
@@ -230,7 +230,7 @@ internal static class VisualStudioMenuIntegrationService
     private static void AddDebugMenuEntries(DTE dte, object menuBar)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
-        var debugMenu = FindControlByCaption(menuBar, "Debug");
+        var debugMenu = FindControlByCaption(menuBar, "调试", "Debug");
         if (debugMenu is null)
         {
             return;
@@ -240,9 +240,9 @@ internal static class VisualStudioMenuIntegrationService
             dte,
             GetPopupCommandBar(debugMenu),
             [
-                new MenuCommandSpec("VSCodex.Debug", "Debug With VSCodex", CodexCommandIds.DebugWithCodexCommandId),
-                new MenuCommandSpec("VSCodex.FixActiveException", "Fix Active Exception", CodexCommandIds.FixActiveExceptionCommandId),
-                new MenuCommandSpec("VSCodex.FixWithVSCodex", "Fix with VSCodex", CodexCommandIds.FixActiveErrorCommandId)
+                new MenuCommandSpec("VSCodex.Debug", "使用 VSCodex 调试", CodexCommandIds.DebugWithCodexCommandId),
+                new MenuCommandSpec("VSCodex.FixActiveException", "修复活动异常", CodexCommandIds.FixActiveExceptionCommandId),
+                new MenuCommandSpec("VSCodex.FixWithVSCodex", "使用 VSCodex 修复", CodexCommandIds.FixActiveErrorCommandId)
             ]);
     }
 
@@ -252,7 +252,7 @@ internal static class VisualStudioMenuIntegrationService
     private static void AddTestMenuEntries(DTE dte, object menuBar)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
-        var testMenu = FindControlByCaption(menuBar, "Test");
+        var testMenu = FindControlByCaption(menuBar, "测试", "Test");
         if (testMenu is null)
         {
             return;
@@ -262,8 +262,8 @@ internal static class VisualStudioMenuIntegrationService
             dte,
             GetPopupCommandBar(testMenu),
             [
-                new MenuCommandSpec("VSCodex.GenerateTests", "Generate Tests", CodexCommandIds.CreateTestFromSelectionCommandId),
-                new MenuCommandSpec("VSCodex.FixTestFailure", "Fix Test Failure", CodexCommandIds.FixTestFailureCommandId)
+                new MenuCommandSpec("VSCodex.GenerateTests", "生成测试", CodexCommandIds.CreateTestFromSelectionCommandId),
+                new MenuCommandSpec("VSCodex.FixTestFailure", "修复测试失败", CodexCommandIds.FixTestFailureCommandId)
             ]);
     }
 
@@ -413,11 +413,11 @@ internal static class VisualStudioMenuIntegrationService
         }
     }
 
-    /// <summary>Finds control By Caption.</summary>
+    /// <summary>Finds control By Caption. Accepts several candidate captions so the lookup works on both localized and English shells.</summary>
     /// <param name="commandBar">The command Bar.</param>
-    /// <param name="caption">The caption.</param>
+    /// <param name="captions">The candidate captions, tried in order.</param>
     /// <returns>The find Control By Caption result.</returns>
-    private static object? FindControlByCaption(object commandBar, string caption)
+    private static object? FindControlByCaption(object commandBar, params string[] captions)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -430,9 +430,12 @@ internal static class VisualStudioMenuIntegrationService
         foreach (var control in EnumerateControls(controls))
         {
             var controlCaption = GetStringProperty(control, "Caption");
-            if (string.Equals(NormalizeCaption(controlCaption), NormalizeCaption(caption), StringComparison.OrdinalIgnoreCase))
+            foreach (var caption in captions)
             {
-                return control;
+                if (string.Equals(NormalizeCaption(controlCaption), NormalizeCaption(caption), StringComparison.OrdinalIgnoreCase))
+                {
+                    return control;
+                }
             }
         }
 

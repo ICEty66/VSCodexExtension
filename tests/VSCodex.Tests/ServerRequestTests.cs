@@ -138,7 +138,7 @@ public sealed class ServerRequestTests
         await Assert.That(content!.Count).IsEqualTo(0);
         ElicitationForm nested = ParseForm("""{"type":"object","properties":{"nested":{"type":"object","properties":{}}}}""");
         await Assert.That(nested.TryBuildContent(out _, out string error)).IsFalse();
-        await Assert.That(error.Contains("Decline or Cancel", StringComparison.Ordinal)).IsTrue();
+        await Assert.That(error.Contains("拒绝", StringComparison.Ordinal)).IsTrue();
         JObject decline = ServerRequestProtocol.CreateResult(McpServerelicitationrequestValue, false, null, false);
         await Assert.That(decline.Value<string>(ActionValue)).IsEqualTo("decline");
         ElicitationForm url = ElicitationForm.Create(new JObject { ["mode"] = "url" });
@@ -153,7 +153,7 @@ public sealed class ServerRequestTests
         ElicitationForm malformed = ParseForm("""{"type":"object","properties":{"value":{"type":"number","minimum":"invalid"}},"required":["value"]}""");
         malformed.Fields[0].Value = "1";
         await Assert.That(malformed.TryBuildContent(out _, out string error)).IsFalse();
-        await Assert.That(error.Contains("Decline or Cancel", StringComparison.Ordinal)).IsTrue();
+        await Assert.That(error.Contains("拒绝", StringComparison.Ordinal)).IsTrue();
         ElicitationForm emptyString = ParseForm("""{"type":"object","properties":{"value":{"type":"string"}},"required":["value"]}""");
         await Assert.That(emptyString.TryBuildContent(out JObject? content, out _)).IsTrue();
         await Assert.That(content!.Value<string>("value")).IsEqualTo(string.Empty);

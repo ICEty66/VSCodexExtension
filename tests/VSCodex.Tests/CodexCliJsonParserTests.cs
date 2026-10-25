@@ -49,7 +49,7 @@ public sealed class CodexCliJsonParserTests
         await Assert.That(parser.Completed).IsFalse();
         var invalid = new CodexCliJsonParser();
         _ = invalid.ParseLine("not json");
-        await Assert.That(invalid.Failure).IsEqualTo("Codex CLI emitted invalid JSON output.");
+        await Assert.That(invalid.Failure).IsEqualTo("Codex CLI 输出了无效的 JSON。");
         await Assert.That(invalid.FinalResponse).IsEqualTo(string.Empty);
     }
 }

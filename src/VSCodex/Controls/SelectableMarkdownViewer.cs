@@ -327,13 +327,13 @@ public sealed class SelectableMarkdownViewer : RichTextBox
             {
                 (object)new MenuItem
                 {
-                    Header = "Copy",
+                    Header = "复制",
                     Command = ApplicationCommands.Copy,
                     CommandTarget = this
                 },
                 (object)new MenuItem
                 {
-                    Header = "Select all",
+                    Header = "全选",
                     Command = ApplicationCommands.SelectAll,
                     CommandTarget = this
                 }

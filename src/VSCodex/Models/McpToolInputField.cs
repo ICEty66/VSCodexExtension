@@ -26,5 +26,5 @@ public sealed class McpToolInputField : ReactiveObject
     public string Value { get => _value; set => this.RaiseAndSetIfChanged(ref _value, value ?? string.Empty); }
 
     /// <summary>Gets the display Label.</summary>
-    public string DisplayLabel => IsRequired ? Name : $"{Name} option";
+    public string DisplayLabel => IsRequired ? Name : $"{Name}（可选）";
 }

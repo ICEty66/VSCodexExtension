@@ -37,8 +37,8 @@ public sealed partial class VSCodexToolWindowViewModel
                     ? window.ResetsAt.Value.ToLocalTime().ToString(window.Label == WeeklyText ? "d MMM HH':'mm" : "HH':'mm")
                     : string.Empty;
                 string reset = window.ResetsAt.HasValue
-                    ? $"Resets {window.ResetsAt.Value.ToLocalTime():f} (local time)."
-                    : "Codex did not supply a reset time.";
+                    ? $"将于 {window.ResetsAt.Value.ToLocalTime():f} 重置（本地时间）。"
+                    : "Codex 未提供重置时间。";
                 status.ToolTip = $"{window.Label}: {window.RemainingPercent}% remaining. {reset} Updated {_timeProvider.GetLocalNow():HH':'mm}.";
             }
 
@@ -49,7 +49,7 @@ public sealed partial class VSCodexToolWindowViewModel
                     _ = RateLimits.Remove(absent);
                 }
 
-                RateLimitUpdatedAt = $"Codex telemetry {_timeProvider.GetLocalNow():HH':'mm}";
+                RateLimitUpdatedAt = $"Codex 遥测 {_timeProvider.GetLocalNow():HH':'mm}";
             }
         }
         catch (JsonException)

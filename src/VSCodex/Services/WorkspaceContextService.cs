@@ -982,7 +982,7 @@ public sealed partial class WorkspaceContextService : IWorkspaceContextService
             return Path.GetFileName(workspaceRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
         }
 
-        return string.IsNullOrWhiteSpace(solutionPath) ? "VSCodex workspace" : Path.GetFileNameWithoutExtension(solutionPath);
+        return string.IsNullOrWhiteSpace(solutionPath) ? "VSCodex 工作区" : Path.GetFileNameWithoutExtension(solutionPath);
     }
 
     /// <summary>Builds workspace Identity.</summary>

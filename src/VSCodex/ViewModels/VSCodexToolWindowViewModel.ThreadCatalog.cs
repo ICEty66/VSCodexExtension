@@ -48,7 +48,7 @@ public sealed partial class VSCodexToolWindowViewModel
 
     /// <summary>Gets the optional public app-server capability.</summary>
     private IThreadCatalogClient ThreadCatalog => _codex as IThreadCatalogClient
-        ?? throw new NotSupportedException("Thread management requires the Codex app-server transport.");
+        ?? throw new NotSupportedException("线程管理需要 Codex 应用服务器传输方式。");
 
     /// <summary>Opens the native editor comparison without changing repository contents.</summary>
     /// <returns>A task that completes when the operation finishes.</returns>
@@ -57,11 +57,11 @@ public sealed partial class VSCodexToolWindowViewModel
         try
         {
             await new NativeDiffReviewService().ReviewActiveFileAsync(_workspace.CurrentWorkspaceRoot);
-            Status = "Opened native HEAD comparison";
+            Status = "已打开原生 HEAD 对比";
         }
         catch (Exception exception)
         {
-            Status = $"Could not open file review: {exception.Message}";
+            Status = $"无法打开文件审阅：{exception.Message}";
         }
     }
 
@@ -79,11 +79,11 @@ public sealed partial class VSCodexToolWindowViewModel
             }
 
             RefreshHistory();
-            Status = "Refreshed Codex thread history";
+            Status = "已刷新 Codex 线程历史";
         }
         catch (Exception exception)
         {
-            Status = $"Could not refresh Codex threads: {exception.Message}";
+            Status = $"无法刷新 Codex 线程：{exception.Message}";
         }
     }
 
@@ -96,7 +96,7 @@ public sealed partial class VSCodexToolWindowViewModel
         JObject catalog = await ThreadCatalog.ListThreadsAsync(archived);
         if (!string.Equals(workspaceRoot, _workspace.CurrentWorkspaceRoot, StringComparison.OrdinalIgnoreCase))
         {
-            throw new InvalidOperationException("The workspace changed while loading history; refresh again.");
+            throw new InvalidOperationException("加载历史时工作区已变更，请再次刷新。");
         }
 
         List<CodexSessionDocument> existing = _sessionStore.LoadRecent(int.MaxValue).ToList();
@@ -155,7 +155,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
         catch (Exception exception)
         {
-            Status = $"Could not load Codex thread: {exception.Message}";
+            Status = $"无法加载 Codex 线程：{exception.Message}";
         }
     }
 
@@ -168,16 +168,16 @@ public sealed partial class VSCodexToolWindowViewModel
         {
             if (item is null || string.IsNullOrWhiteSpace(item.ThreadId))
             {
-                Status = "This history entry has no Codex thread to fork";
+                Status = "该历史项没有可分叉的 Codex 线程";
                 return;
             }
 
             SaveCurrentSessionIfNeeded();
             WorkspaceIdentity workspace = _workspace.CurrentWorkspaceIdentity;
             JObject result = await ThreadCatalog.ForkThreadAsync(item.ThreadId!);
-            JObject thread = result[ThreadPropertyName] as JObject ?? throw new InvalidOperationException("Codex did not return the forked thread.");
+            JObject thread = result[ThreadPropertyName] as JObject ?? throw new InvalidOperationException("Codex 未返回分叉后的线程。");
             CodexSessionDocument fork = _sessionStore.Create();
-            fork.ThreadId = thread.Value<string>(IdentifierPropertyName) ?? throw new InvalidOperationException("Codex returned no fork identifier.");
+            fork.ThreadId = thread.Value<string>(IdentifierPropertyName) ?? throw new InvalidOperationException("Codex 未返回分叉标识。");
             fork.Title = $"{item.Title} (fork)";
             ApplyWorkspaceToSession(fork, workspace);
             CodexSessionDocument? source = _sessionStore.Load(item.Id);
@@ -194,7 +194,7 @@ public sealed partial class VSCodexToolWindowViewModel
             RefreshHistory();
             if (!string.Equals(workspace.Id, _workspace.CurrentWorkspaceIdentity.Id, StringComparison.OrdinalIgnoreCase))
             {
-                Status = "Fork saved in the source workspace history";
+                Status = "分叉已保存到源工作区历史";
                 return;
             }
 
@@ -202,7 +202,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
         catch (Exception exception)
         {
-            Status = $"Could not fork Codex thread: {exception.Message}";
+            Status = $"无法分叉 Codex 线程：{exception.Message}";
         }
     }
 
@@ -233,11 +233,11 @@ public sealed partial class VSCodexToolWindowViewModel
             }
 
             RefreshHistory();
-            Status = archived ? "Archived conversation" : "Restored conversation";
+            Status = archived ? "已归档会话" : "已恢复会话";
         }
         catch (Exception exception)
         {
-            Status = $"Could not update archive state: {exception.Message}";
+            Status = $"无法更新归档状态：{exception.Message}";
         }
     }
 
@@ -259,6 +259,6 @@ public sealed partial class VSCodexToolWindowViewModel
         }
 
         RefreshHistory();
-        Status = session.IsPinned ? "Pinned conversation locally" : "Unpinned conversation";
+        Status = session.IsPinned ? "已在本地固定会话" : "已取消固定会话";
     }
 }

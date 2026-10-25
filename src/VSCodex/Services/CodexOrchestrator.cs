@@ -45,7 +45,7 @@ public sealed class CodexOrchestrator : ICodexOrchestrator, IThreadCatalogClient
 
     /// <summary>Gets the transport capability without implying CLI support.</summary>
     private IThreadCatalogClient ThreadCatalog => _sdk as IThreadCatalogClient
-        ?? throw new NotSupportedException("Thread management requires the Codex app-server transport.");
+        ?? throw new NotSupportedException("线程管理需要 Codex 应用服务器传输方式。");
 
     /// <summary>Gets models from the account-aware app-server transport.</summary>
     /// <returns>The complete runtime catalog.</returns>
@@ -227,20 +227,20 @@ public sealed class CodexOrchestrator : ICodexOrchestrator, IThreadCatalogClient
         CodexRunRequest? failoverRequest = BuildFailoverRequest(request);
         if (failoverRequest is null)
         {
-            PublishFallbackEvent("fallback", $"SDK bridge failed; using CLI fallback: {sdkException.Message}");
+            PublishFallbackEvent("fallback", $"SDK 桥接失败，改用 CLI 回退：{sdkException.Message}");
             return await RunCliFallbackAsync(request, sdkException).ConfigureAwait(continueOnCapturedContext: false);
         }
 
         PublishFallbackEvent(
             "fallback-model",
-            $"SDK bridge failed for {request.Options.Model}; retrying failover model {failoverRequest.Options.Model}: {sdkException.Message}");
+            $"SDK 桥接在 {request.Options.Model} 上失败，正在改用故障转移模型 {failoverRequest.Options.Model}：{sdkException.Message}");
         try
         {
             return await _sdk.RunAsync(failoverRequest).ConfigureAwait(continueOnCapturedContext: false);
         }
         catch (Exception failoverException) when (failoverException is not CodexRunFailureException)
         {
-            PublishFallbackEvent("fallback", $"SDK failover model also failed; using CLI fallback: {failoverException.Message}");
+            PublishFallbackEvent("fallback", $"故障转移模型同样失败，改用 CLI 回退：{failoverException.Message}");
             return await RunCliFallbackAsync(failoverRequest, failoverException).ConfigureAwait(continueOnCapturedContext: false);
         }
     }
@@ -277,11 +277,11 @@ public sealed class CodexOrchestrator : ICodexOrchestrator, IThreadCatalogClient
     private string CreateTransportFailureMessage(Exception sdkException, Exception cliException)
     {
         var message = new StringBuilder();
-        _ = message.Append("VSCodex could not run because the Codex SDK bridge failed and the optional Codex CLI fallback could not ");
-        _ = message.Append("complete the request. Open the VSCodex Settings tab, run Check setup, verify the Codex SDK with ");
-        _ = message.Append("`npm install -g @openai/codex-sdk`, and only set a Codex profile when it exists in ");
-        _ = message.Append("%USERPROFILE%\\.codex\\config.toml. Optional CLI fallback install: `npm install -g @openai/codex`. ");
-        _ = message.Append($"SDK failure: {sdkException.Message} CLI failure: {cliException.Message}");
+        _ = message.Append("VSCodex 无法运行，因为 Codex SDK 桥接失败，且可选的 Codex CLI 回退也无法完成该请求。");
+        _ = message.Append("请打开 VSCodex 设置标签页，运行“检查配置”，并确认 Codex SDK 可用（npm install -g @openai/codex-sdk）；");
+        _ = message.Append("只有当 %USERPROFILE%\\.codex\\config.toml 中存在对应配置项时，才设置 Codex 配置文件。");
+        _ = message.Append("可选 CLI 回退安装：npm install -g @openai/codex。 ");
+        _ = message.Append($"SDK 失败：{sdkException.Message}；CLI 失败：{cliException.Message}");
         return message.ToString();
     }
 }

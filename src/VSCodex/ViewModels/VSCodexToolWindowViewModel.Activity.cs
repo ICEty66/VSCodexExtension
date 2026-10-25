@@ -10,13 +10,13 @@ public sealed partial class VSCodexToolWindowViewModel
     /// <summary>Creates agent Plan Prompt.</summary>
     private void CreateAgentPlanPrompt()
     {
-        string goal = (string.IsNullOrWhiteSpace(Prompt) ? "Plan the selected coding task from current Visual Studio solution context." : Prompt);
+        string goal = (string.IsNullOrWhiteSpace(Prompt) ? "基于当前 Visual Studio 解决方案上下文，为选中的编码任务制定计划。" : Prompt);
         RefreshAgentPlanPreview(goal);
         Prompt = _assistantContext.BuildPlanPrompt(goal, BuildAgentSummary());
         Mode = CodexRunMode.Plan;
         SelectedToolTabIndex = Numeric6;
         IsToolPanelOpen = true;
-        Status = "Prepared VSCodex agent plan";
+        Status = "已准备 VSCodex 智能体计划";
     }
 
     /// <summary>Refreshes agent Plan Preview.</summary>
@@ -33,23 +33,23 @@ public sealed partial class VSCodexToolWindowViewModel
         {
             (
                 Preferred: "Planner",
-                Title: "Clarify goal and acceptance criteria",
+                Title: "明确目标与验收标准",
                 Description: "Use the current Visual Studio solution, selected code, references, memories, and MCP tools to define the work."),
             (
                 Preferred: "Architect",
-                Title: "Assess architecture and integration risks",
+                Title: "评估架构与集成风险",
                 Description: "Identify affected projects, services, UI surfaces, threading risks, and compatibility constraints before editing."),
             (
                 Preferred: "Builder",
-                Title: "Implement focused changes",
+                Title: "实施聚焦改动",
                 Description: "Apply the smallest coherent code changes needed for the requested outcome."),
             (
                 Preferred: "Reviewer",
-                Title: "Review behavior, UX, and safety",
+                Title: "审阅行为、体验与安全性",
                 Description: "Check correctness, regressions, user-visible behavior, and missing coverage."),
             (
                 Preferred: "Verifier",
-                Title: "Validate in Visual Studio and command-line tests",
+                Title: "在 Visual Studio 与命令行中验证",
                 Description: "Run the relevant build, test, VSIX, and interactive Visual Studio checks, then summarize evidence.")
         }.Select((section, index) => new OrchestrationTaskSection
         {
@@ -68,18 +68,18 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (message is null || string.IsNullOrWhiteSpace(message.Content))
         {
-            Status = "No message content to copy";
+            Status = "没有可复制的消息内容";
             return;
         }
 
         try
         {
             Clipboard.SetText(message.Content);
-            Status = "Copied VSCodex message";
+            Status = "已复制 VSCodex 消息";
         }
         catch (Exception ex)
         {
-            Status = $"Could not copy message: {ex.Message}";
+            Status = $"无法复制消息：{ex.Message}";
         }
     }
 
@@ -89,18 +89,18 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (node is null || string.IsNullOrWhiteSpace(node.Detail))
         {
-            Status = "No activity text to copy";
+            Status = "没有可复制的活动文本";
             return;
         }
 
         try
         {
             Clipboard.SetText(node.Detail);
-            Status = "Copied VSCodex response text";
+            Status = "已复制 VSCodex 回复文本";
         }
         catch (Exception ex)
         {
-            Status = $"Could not copy response text: {ex.Message}";
+            Status = $"无法复制回复文本：{ex.Message}";
         }
     }
 
@@ -110,12 +110,12 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (message is null || string.IsNullOrWhiteSpace(message.Content))
         {
-            Status = "No message content to use";
+            Status = "没有可用的消息内容";
             return;
         }
 
         Prompt = message.Content;
-        Status = ((message.Role == CodexMessageRole.User) ? "Copied user prompt back to input" : "Copied message back to input");
+        Status = ((message.Role == CodexMessageRole.User) ? "已将用户提示词复制回输入框" : "已将消息复制回输入框");
     }
 
     /// <summary>Opens activity File.</summary>
@@ -124,13 +124,13 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (node is null || string.IsNullOrWhiteSpace(node.FilePath))
         {
-            Status = "No file is associated with this activity";
+            Status = "此活动没有关联文件";
             return;
         }
 
         if (node.IsDeleted || !File.Exists(node.FilePath))
         {
-            Status = $"Changed file no longer exists: {node.FilePath}";
+            Status = $"更改的文件已不存在：{node.FilePath}";
             return;
         }
 
@@ -145,7 +145,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
         catch (Exception ex)
         {
-            Status = $"Could not open changed file: {ex.Message}";
+            Status = $"无法打开更改的文件：{ex.Message}";
         }
     }
 
@@ -158,7 +158,7 @@ public sealed partial class VSCodexToolWindowViewModel
         RunActivityNode root = new RunActivityNode
         {
             Kind = RunActivityKind.User,
-            Title = "User request",
+            Title = "用户请求",
             Detail = (prompt ?? string.Empty),
             StartedAt = started,
             IsExpanded = true
@@ -174,12 +174,12 @@ public sealed partial class VSCodexToolWindowViewModel
     /// <param name="root">The root.</param>
     private void AddDefaultActivitySections(RunActivityNode root)
     {
-        root.Children.Add(CreateSection(RunActivityKind.Agent, "Agent actions"));
-        root.Children.Add(CreateSection(RunActivityKind.Mcp, "MCP usage"));
-        root.Children.Add(CreateSection(RunActivityKind.Skill, "Skill usage"));
-        root.Children.Add(CreateSection(RunActivityKind.Files, "Files changed"));
-        root.Children.Add(CreateSection(RunActivityKind.Assistant, "Assistant response"));
-        root.Children.Add(CreateSection(RunActivityKind.System, "System prompts and diagnostics"));
+        root.Children.Add(CreateSection(RunActivityKind.Agent, "智能体操作"));
+        root.Children.Add(CreateSection(RunActivityKind.Mcp, "MCP 调用"));
+        root.Children.Add(CreateSection(RunActivityKind.Skill, "技能调用"));
+        root.Children.Add(CreateSection(RunActivityKind.Files, "文件更改"));
+        root.Children.Add(CreateSection(RunActivityKind.Assistant, "助手回复"));
+        root.Children.Add(CreateSection(RunActivityKind.System, "系统提示与诊断"));
     }
 
     /// <summary>Creates section.</summary>
@@ -210,7 +210,7 @@ public sealed partial class VSCodexToolWindowViewModel
     private RunActivityNode GetActivitySection(RunActivityKind kind)
     {
         RunActivityNode? root = CurrentActivityRoot();
-        root ??= BeginRunActivity("System activity");
+        root ??= BeginRunActivity("系统活动");
 
         RunActivityKind sectionKind = ((kind == RunActivityKind.File) ? RunActivityKind.Files : kind);
         RunActivityNode? section = root.Children.FirstOrDefault((child) => child.Kind == sectionKind);
@@ -356,8 +356,8 @@ public sealed partial class VSCodexToolWindowViewModel
                 activitySection.Children.Add(new RunActivityNode
                 {
                     Kind = RunActivityKind.Files,
-                    Title = "No changed files detected",
-                    Detail = "Git did not report workspace file changes after this request.",
+                    Title = "未检测到文件更改",
+                    Detail = "本次请求后 Git 未报告工作区文件更改。",
                     StartedAt = _timeProvider.GetLocalNow()
                 });
             }
@@ -411,7 +411,7 @@ public sealed partial class VSCodexToolWindowViewModel
                     Method = text,
                     ToolName = text,
                     ArgumentsPreview = (jsonObject["params"]?.ToString() ?? string.Empty),
-                    Reason = text == "mcpServer/elicitation/request" ? "Codex needs your input" : "Codex needs your approval"
+                    Reason = text == "mcpServer/elicitation/request" ? "Codex 需要你的输入" : "Codex 需要你的批准"
                 };
                 ApprovalRequests.Add(item);
                 _ = AddMessage(CodexMessageRole.Approval, ev.Message, persist: false);
@@ -419,10 +419,10 @@ public sealed partial class VSCodexToolWindowViewModel
             }
             else if (ev.Type == "assistant-delta")
             {
-                _activeStreamingResponse ??= AddRunActivity(RunActivityKind.Assistant, "Codex response", string.Empty);
+                _activeStreamingResponse ??= AddRunActivity(RunActivityKind.Assistant, "Codex 回复", string.Empty);
 
                 _activeStreamingResponse.Detail += ev.Message;
-                Status = "Codex is responding...";
+                Status = "Codex 正在回复……";
             }
             else if (ev.Type == "stdout" || ev.Type == "message")
             {
@@ -510,7 +510,7 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         _activeRunStartedAt = _timeProvider.GetLocalNow();
         _activeRunStage = stage;
-        _activeProgressNode = AddRunActivity(RunActivityKind.Agent, "VSCodex is working", BuildRunProgressMessage(stage));
+        _activeProgressNode = AddRunActivity(RunActivityKind.Agent, "VSCodex 正在处理", BuildRunProgressMessage(stage));
         return Observable.Interval(TimeSpan.FromSeconds(Numeric15Point0), _uiScheduler).Subscribe(_ => RefreshRunProgress());
     }
 
@@ -534,7 +534,7 @@ public sealed partial class VSCodexToolWindowViewModel
             return;
         }
 
-        _activeProgressNode.Title = (string.IsNullOrWhiteSpace(_activeRunStage) ? "VSCodex is working" : _activeRunStage);
+        _activeProgressNode.Title = (string.IsNullOrWhiteSpace(_activeRunStage) ? "VSCodex 正在处理" : _activeRunStage);
         _activeProgressNode.Detail = BuildRunProgressMessage(_activeRunStage);
         UpdateRunActivityElapsed(_activeRunActivity);
     }
@@ -547,7 +547,7 @@ public sealed partial class VSCodexToolWindowViewModel
         {
             if (_activeProgressNode is not null)
             {
-                _activeProgressNode.Title = (string.IsNullOrWhiteSpace(stage) ? "VSCodex complete" : stage);
+                _activeProgressNode.Title = (string.IsNullOrWhiteSpace(stage) ? "VSCodex 已完成" : stage);
                 _activeProgressNode.Detail = BuildRunProgressMessage(stage);
             }
 
@@ -564,9 +564,9 @@ public sealed partial class VSCodexToolWindowViewModel
         TimeSpan elapsed = ((_activeRunStartedAt == default(DateTimeOffset))
             ? TimeSpan.Zero
             : (_timeProvider.GetLocalNow() - _activeRunStartedAt));
-        string workspace = (string.IsNullOrWhiteSpace(_workspace.CurrentWorkspaceRoot) ? "Waiting for Visual Studio workspace" : _workspace.CurrentWorkspaceRoot);
-        string currentStage = (string.IsNullOrWhiteSpace(stage) ? "Preparing request" : stage);
-        return $"**VSCodex is working**{Environment.NewLine}{Environment.NewLine}" +
+        string workspace = (string.IsNullOrWhiteSpace(_workspace.CurrentWorkspaceRoot) ? "正在等待 Visual Studio 工作区" : _workspace.CurrentWorkspaceRoot);
+        string currentStage = (string.IsNullOrWhiteSpace(stage) ? "正在准备请求" : stage);
+        return $"**VSCodex 正在处理**{Environment.NewLine}{Environment.NewLine}" +
             $"- Status: {currentStage}{Environment.NewLine}" +
             $"- Elapsed: {FormatElapsed(elapsed)}{Environment.NewLine}" +
             $"- Workspace: {workspace}";

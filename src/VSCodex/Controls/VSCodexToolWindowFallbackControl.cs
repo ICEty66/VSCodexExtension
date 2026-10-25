@@ -36,10 +36,10 @@ internal sealed class VSCodexToolWindowFallbackControl : UserControl
         SetResourceReference(BackgroundProperty, EnvironmentColors.ToolWindowBackgroundBrushKey);
 
         var panel = new StackPanel { Margin = new(Numeric16), MaxWidth = Numeric900 };
-        _ = panel.Children.Add(CreateText("VSCodex could not initialize", Numeric18, FontWeights.SemiBold, 0, 0, 0, Numeric8));
+        _ = panel.Children.Add(CreateText("VSCodex 无法初始化", Numeric18, FontWeights.SemiBold, 0, 0, 0, Numeric8));
         _ = panel.Children.Add(CreateText(
-            "The extension package loaded, but the ReactiveUI tool-window surface failed while it was being created. " +
-            "The details below are also written to the Visual Studio ActivityLog.",
+            "扩展包已加载，但 ReactiveUI 工具窗口界面在创建过程中失败。 " +
+            "以下详细信息同时会写入 Visual Studio 活动日志。",
             Numeric12,
             FontWeights.Normal,
             0,
@@ -47,8 +47,8 @@ internal sealed class VSCodexToolWindowFallbackControl : UserControl
             0,
             Numeric12));
         _ = panel.Children.Add(CreateText(
-            "Open VSCodex from View > Other Windows > VSCodex or Extensions > VSCodex after rebuilding the VSIX. " +
-            "If this fallback remains visible, the exception text identifies the startup component that failed.",
+            "重新生成 VSIX 后，可从“视图 > 其他窗口 > VSCodex”或“扩展 > VSCodex”打开。 " +
+            "如果该兜底界面一直显示，异常文本可指明启动失败的组件。",
             Numeric12,
             FontWeights.Normal,
             0,

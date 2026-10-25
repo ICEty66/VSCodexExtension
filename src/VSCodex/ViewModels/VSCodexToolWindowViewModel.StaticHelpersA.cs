@@ -190,7 +190,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
 
         string? firstUserMessage = session.Messages?.FirstOrDefault((ChatMessage message) => message.Role == CodexMessageRole.User && !string.IsNullOrWhiteSpace(message.Content))?.Content;
-        return !string.IsNullOrWhiteSpace(firstUserMessage) ? CompactLine(firstUserMessage, Numeric90) : $"VSCodex thread {session.Created.ToLocalTime():g}";
+        return !string.IsNullOrWhiteSpace(firstUserMessage) ? CompactLine(firstUserMessage, Numeric90) : $"VSCodex 线程 {session.Created.ToLocalTime():g}";
     }
 
     /// <summary>Performs the derive Session Preview operation.</summary>
@@ -199,7 +199,7 @@ public sealed partial class VSCodexToolWindowViewModel
     private static string DeriveSessionPreview(CodexSessionDocument session)
     {
         string? message = session.Messages?.LastOrDefault((ChatMessage item) => !string.IsNullOrWhiteSpace(item.Content))?.Content;
-        return !string.IsNullOrWhiteSpace(message) ? CompactLine(message, Numeric180) : "No messages saved";
+        return !string.IsNullOrWhiteSpace(message) ? CompactLine(message, Numeric180) : "没有已保存的消息";
     }
 
     /// <summary>Performs the compact Line operation.</summary>
@@ -362,12 +362,12 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         return kind switch
         {
-            RunActivityKind.Agent => "Agent actions",
-            RunActivityKind.Mcp => "MCP usage",
-            RunActivityKind.Skill => "Skill usage",
-            RunActivityKind.Files => "Files changed",
-            RunActivityKind.Assistant => "Assistant response",
-            RunActivityKind.System => "System prompts and diagnostics",
+            RunActivityKind.Agent => "智能体操作",
+            RunActivityKind.Mcp => "MCP 调用",
+            RunActivityKind.Skill => "技能调用",
+            RunActivityKind.Files => "文件更改",
+            RunActivityKind.Assistant => "助手回复",
+            RunActivityKind.System => "系统提示与诊断",
             _ => "Activity",
         };
     }

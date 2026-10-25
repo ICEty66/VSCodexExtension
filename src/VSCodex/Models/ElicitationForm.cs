@@ -32,7 +32,7 @@ public sealed class ElicitationForm
         }
         catch (Exception ex) when (ex is ArgumentException || ex is FormatException || ex is InvalidCastException || ex is OverflowException)
         {
-            return new ElicitationForm { UnsupportedReason = "The server supplied a malformed form schema. Choose Decline or Cancel to continue." };
+            return new ElicitationForm { UnsupportedReason = "服务器提供的表单架构格式有误。请选择“拒绝”或“取消”以继续。" };
         }
     }
 
@@ -77,14 +77,14 @@ public sealed class ElicitationForm
         if (!IsFormMode(parameters) || schema?.Value<string>("type") != "object"
             || schema["properties"] is not JObject properties)
         {
-            form.UnsupportedReason = "This request uses an unsupported form or URL mode. Choose Decline or Cancel to continue.";
+            form.UnsupportedReason = "该请求使用了不受支持的表单或 URL 模式。请选择“拒绝”或“取消”以继续。";
             return form;
         }
 
         var allowedRoot = new[] { "type", "properties", "required", "title", "description", "$schema", "additionalProperties" };
         if (schema.Properties().Any(p => !allowedRoot.Contains(p.Name)))
         {
-            form.UnsupportedReason = "This form uses unsupported object constraints. Choose Decline or Cancel to continue.";
+            form.UnsupportedReason = "该表单使用了不受支持的对象约束。请选择“拒绝”或“取消”以继续。";
             return form;
         }
 
@@ -108,7 +108,7 @@ public sealed class ElicitationForm
         {
             if (property.Value is not JObject definition || !ElicitationField.IsSupported(definition))
             {
-                form.UnsupportedReason = $"The field '{property.Name}' uses an unsupported schema. Choose Decline or Cancel to continue.";
+                form.UnsupportedReason = $"字段“{property.Name}”使用了不受支持的架构。请选择“拒绝”或“取消”以继续。";
                 return;
             }
 
@@ -117,7 +117,7 @@ public sealed class ElicitationForm
 
         if (required.Any(r => !properties.ContainsKey(r.Value<string>() ?? string.Empty)))
         {
-            form.UnsupportedReason = "The form requires a field without a definition. Choose Decline or Cancel to continue.";
+            form.UnsupportedReason = "该表单需要一个未定义字段。请选择“拒绝”或“取消”以继续。";
         }
     }
 }

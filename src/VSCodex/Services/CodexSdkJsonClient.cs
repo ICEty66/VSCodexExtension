@@ -154,7 +154,7 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
     /// <summary>Releases process resources.</summary>
     public void Dispose()
     {
-        FailPendingRequests("Codex SDK bridge has been disposed.");
+        FailPendingRequests("Codex SDK 桥接已被释放。");
         TryKillProcess();
         _events.Dispose();
     }
@@ -205,7 +205,7 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
             return;
         }
 
-        throw new InvalidOperationException("VSCodex cannot run because Visual Studio has not provided a solution or project workspace root yet.");
+        throw new InvalidOperationException("VSCodex 无法运行，因为 Visual Studio 尚未提供解决方案或项目工作区根目录。");
     }
 
     /// <summary>Observes a non-blocking interruption request.</summary>
@@ -229,7 +229,7 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
     {
         if (_stdin is null)
         {
-            throw new InvalidOperationException("Codex SDK bridge is not running.");
+            throw new InvalidOperationException("Codex SDK 桥接未在运行。");
         }
 
         string id = Guid.NewGuid().ToString("N");
@@ -257,7 +257,7 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
         await _writeGate.WaitAsync().ConfigureAwait(false);
         try
         {
-            StreamWriter writer = _stdin ?? throw new InvalidOperationException("Codex SDK bridge is not running.");
+            StreamWriter writer = _stdin ?? throw new InvalidOperationException("Codex SDK 桥接未在运行。");
             await writer.WriteLineAsync(ToCompactJson(payload)).ConfigureAwait(false);
             await writer.FlushAsync().ConfigureAwait(false);
         }
@@ -295,7 +295,7 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
                 return;
             }
 
-            FailPendingRequests("The previous Codex bridge stopped before responding.");
+            FailPendingRequests("上一个 Codex 桥接在响应前已停止。");
             Process bridge = StartBridge(ResolveBridgeScript());
             _process = bridge;
             _stdin = Utf8ProcessStreams.CreateWriter(bridge.StandardInput.BaseStream);
@@ -321,7 +321,7 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
         {
             if (ReferenceEquals(bridge, _process))
             {
-                FailPendingRequests("Codex bridge disconnected before responding. Retry after checking the runtime setup.");
+                FailPendingRequests("Codex 桥接在响应前断开。请检查运行时配置后重试。");
             }
         }
     }
@@ -347,7 +347,7 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
         script = string.IsNullOrWhiteSpace(script) ? LocalPaths.BundledBridgeScript : script;
         if (!File.Exists(script))
         {
-            throw new FileNotFoundException("Codex SDK bridge script was not found.", script);
+            throw new FileNotFoundException("未找到 Codex SDK 桥接脚本。", script);
         }
 
         return script;
@@ -365,14 +365,14 @@ public sealed class CodexSdkJsonClient(ISettingsStore settings) : ICodexClient, 
             redirectStandardInput: true);
         try
         {
-            return Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start node bridge.");
+            return Process.Start(startInfo) ?? throw new InvalidOperationException("无法启动 node 桥接。");
         }
         catch (Win32Exception innerException)
         {
             var message = new StringBuilder();
-            _ = message.Append("Node.js executable was not found. Install Node.js LTS on Windows with ");
-            _ = message.Append("`winget install OpenJS.NodeJS.LTS`, restart Visual Studio, or set the VSCodex Node Path setting ");
-            _ = message.Append("to the full node.exe path. Current value: ");
+            _ = message.Append("未找到 Node.js 可执行文件。在 Windows 上安装 Node.js LTS：");
+            _ = message.Append("`winget install OpenJS.NodeJS.LTS`，重启 Visual Studio，或将 VSCodex Node 路径设置");
+            _ = message.Append("指向 node.exe 的完整路径。当前值：");
             _ = message.Append(_settings.Current.NodePath);
             throw new InvalidOperationException(message.ToString(), innerException);
         }

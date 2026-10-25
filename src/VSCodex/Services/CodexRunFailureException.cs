@@ -10,7 +10,7 @@ public sealed class CodexRunFailureException : Exception
 {
     /// <summary>Initializes a new instance of the <see cref="CodexRunFailureException"/> class.</summary>
     public CodexRunFailureException()
-        : base("Codex could not finish this request. Review any changes before retrying.")
+        : base("Codex 未能完成此请求。重试前请检查已产生的更改。")
     {
     }
 
@@ -32,7 +32,7 @@ public sealed class CodexRunFailureException : Exception
     /// <summary>Initializes a new instance of the <see cref="CodexRunFailureException"/> class.</summary>
     /// <param name="innerException">The transport or execution failure.</param>
     public CodexRunFailureException(Exception innerException)
-        : base($"Codex could not finish this request. Review any changes before retrying. {innerException.Message}", innerException)
+        : base($"Codex 未能完成此请求。重试前请检查已产生的更改。{innerException.Message}", innerException)
     {
     }
 }

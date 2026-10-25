@@ -325,7 +325,7 @@
                 <DataTrigger Binding="{Binding IsListeningToVoice}" Value="True">
                     <Setter Property="Background" Value="{DynamicResource {x:Static vsui:EnvironmentColors.FileTabSelectedBackgroundBrushKey}}" />
                     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsui:EnvironmentColors.FileTabSelectedBorderBrushKey}}" />
-                    <Setter Property="ToolTip" Value="Listening. Click to stop VSCodex voice input." />
+                    <Setter Property="ToolTip" Value="正在聆听。点击可停止 VSCodex 语音输入。" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -338,10 +338,10 @@
             <Setter Property="MinWidth" Value="34" />
             <Setter Property="Height" Value="30" />
             <Setter Property="MinHeight" Value="30" />
-            <Setter Property="ToolTip" Value="Send" />
+            <Setter Property="ToolTip" Value="发送" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsRunControlInStopMode}" Value="True">
-                    <Setter Property="ToolTip" Value="Stop" />
+                    <Setter Property="ToolTip" Value="停止" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -423,8 +423,8 @@
                                           Background="Transparent" BorderThickness="0"
                                           Foreground="{TemplateBinding Foreground}"
                                           Content="+" Focusable="False"
-                                          AutomationProperties.Name="Expand or collapse activity"
-                                          ToolTip="Expand or collapse this activity."
+                                          AutomationProperties.Name="展开或折叠活动"
+                                          ToolTip="展开或折叠此活动。"
                                           IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" />
                             <ContentPresenter Grid.Column="1" ContentSource="Header"
                                               HorizontalAlignment="Stretch" />
@@ -459,12 +459,12 @@
                     <DockPanel LastChildFill="True">
                         <Button
                             Margin="5,0,0,0"
-                            AutomationProperties.Name="Copy VSCodex response text"
+                            AutomationProperties.Name="复制 VSCodex 回复文本"
                             Command="{Binding DataContext.CopyActivityDetailCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
                             CommandParameter="{Binding}"
                             DockPanel.Dock="Right"
                             Style="{StaticResource IconButtonStyle}"
-                            ToolTip="Copy this VSCodex response text.">
+                            ToolTip="复制这段 VSCodex 回复文本。">
                             <Button.Visibility>
                                 <Binding Converter="{StaticResource BooleanToVisibilityConverter}" Path="HasDetail" />
                             </Button.Visibility>
@@ -492,7 +492,7 @@
                             TextAlignment="Right" />
                         <Button
                             Margin="0"
-                            AutomationProperties.Name="Open changed file"
+                            AutomationProperties.Name="打开已更改的文件"
                             Command="{Binding DataContext.OpenActivityFileCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
                             CommandParameter="{Binding}"
                             Content="{Binding HeaderText}"
@@ -730,10 +730,10 @@
                         Source="/VSCodex;component/Resources/VSCodexIcon-32.png"
                         ToolTip="VSCodex" />
                     <Button
-                        AutomationProperties.Name="New VSCodex thread"
+                        AutomationProperties.Name="新建 VSCodex 线程"
                         Command="{Binding NewThreadCommand}"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Start a fresh VSCodex thread.">
+                        ToolTip="开始一个新的 VSCodex 线程。">
                         <Viewbox
                             Width="14"
                             Height="14"
@@ -755,10 +755,10 @@
                         </Viewbox>
                     </Button>
                     <Button
-                        AutomationProperties.Name="Open VSCodex history"
+                        AutomationProperties.Name="打开 VSCodex 历史"
                         Command="{Binding ShowHistoryCommand}"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Open VSCodex conversation history.">
+                        ToolTip="打开 VSCodex 会话历史。">
                         <Viewbox
                             Width="15"
                             Height="15"
@@ -780,10 +780,10 @@
                         </Viewbox>
                     </Button>
                     <Button
-                        AutomationProperties.Name="Open VSCodex settings"
+                        AutomationProperties.Name="打开 VSCodex 设置"
                         Click="OnOpenSettingsClick"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Open VSCodex settings in Visual Studio Options.">
+                        ToolTip="在 Visual Studio 选项中打开 VSCodex 设置。">
                         <Viewbox
                             Width="15"
                             Height="15"
@@ -802,7 +802,7 @@
                 </WrapPanel>
 
                 <ItemsControl Grid.Row="1" Margin="0,2,0,2"
-                              AutomationProperties.Name="Rate limits remaining"
+                              AutomationProperties.Name="剩余速率限制"
                               ItemTemplate="{StaticResource RateLimitTemplate}"
                               ItemsSource="{Binding RateLimits}" />
                 <TextBlock
@@ -854,18 +854,18 @@
                     <TextBlock
                         VerticalAlignment="Center"
                         FontWeight="SemiBold"
-                        Text="Workspace" />
-                    <Button ToolTip="Settings."
+                        Text="工作区" />
+                    <Button ToolTip="设置。"
                         Grid.Column="1"
                         Margin="0,0,6,0"
-                        AutomationProperties.Name="Open VSCodex settings"
+                        AutomationProperties.Name="打开 VSCodex 设置"
                         Click="OnOpenSettingsClick"
                         Content="{x:Static catalog:KnownMonikers.Settings}"
                         Style="{StaticResource NativeIconButtonStyle}" />
-                    <Button ToolTip="Close."
+                    <Button ToolTip="关闭。"
                         Grid.Column="2"
                         Margin="0"
-                        AutomationProperties.Name="Close VSCodex workspace"
+                        AutomationProperties.Name="关闭 VSCodex 工作区"
                         Click="OnCloseToolPanelClick"
                         Content="{x:Static catalog:KnownMonikers.Close}"
                         Style="{StaticResource NativeIconButtonStyle}" />
@@ -874,29 +874,29 @@
             <TabControl
                 Margin="0"
                 SelectedIndex="{Binding SelectedToolTabIndex, Mode=TwoWay}">
-                <TabItem Header="History">
+                <TabItem Header="历史">
                     <DockPanel Margin="8">
                         <StackPanel DockPanel.Dock="Top">
                             <TextBox
                                 Margin="0,0,0,8"
                                 AcceptsReturn="False"
                                 Text="{Binding HistorySearchText, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTip="Search VSCodex conversation history." />
+                                ToolTip="搜索 VSCodex 会话历史。" />
                             <WrapPanel>
-                                <Button ToolTip="New thread." AutomationProperties.Name="New thread"
+                                <Button ToolTip="新建线程。" AutomationProperties.Name="新建线程"
                                     Command="{Binding NewThreadCommand}"
                                     Content="{x:Static catalog:KnownMonikers.Add}"
                                     Style="{StaticResource NativeIconButtonStyle}" />
-                                <Button ToolTip="Refresh." AutomationProperties.Name="Refresh"
+                                <Button ToolTip="刷新。" AutomationProperties.Name="刷新"
                                     Command="{Binding RefreshHistoryCommand}"
                                     Content="{x:Static catalog:KnownMonikers.Refresh}"
                                     Style="{StaticResource NativeIconButtonStyle}" />
-                                <Button Command="{Binding RefreshThreadsCommand}" AutomationProperties.Name="Import Codex threads" ToolTip="Refresh threads from Codex." Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.Refresh}" />
-                                <Button Command="{Binding ForkSessionCommand}" CommandParameter="{Binding SelectedHistoryItem}" AutomationProperties.Name="Fork selected conversation" ToolTip="Fork the selected conversation." Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.Branch}" />
-                                <Button Command="{Binding PinSessionCommand}" CommandParameter="{Binding SelectedHistoryItem}" AutomationProperties.Name="Pin or unpin selected conversation" ToolTip="Pin or unpin the selected conversation." Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.Pin}" />
-                                <Button Command="{Binding ArchiveSessionCommand}" CommandParameter="{Binding SelectedHistoryItem}" AutomationProperties.Name="Archive or restore selected conversation" ToolTip="Archive or restore the selected conversation." Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.OpenFolder}" />
+                                <Button Command="{Binding RefreshThreadsCommand}" AutomationProperties.Name="导入 Codex 线程" ToolTip="从 Codex 刷新线程。" Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.Refresh}" />
+                                <Button Command="{Binding ForkSessionCommand}" CommandParameter="{Binding SelectedHistoryItem}" AutomationProperties.Name="分叉所选会话" ToolTip="分叉所选会话。" Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.Branch}" />
+                                <Button Command="{Binding PinSessionCommand}" CommandParameter="{Binding SelectedHistoryItem}" AutomationProperties.Name="固定或取消固定所选会话" ToolTip="固定或取消固定所选会话。" Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.Pin}" />
+                                <Button Command="{Binding ArchiveSessionCommand}" CommandParameter="{Binding SelectedHistoryItem}" AutomationProperties.Name="归档或恢复所选会话" ToolTip="归档或恢复所选会话。" Style="{StaticResource NativeIconButtonStyle}" Content="{x:Static catalog:KnownMonikers.OpenFolder}" />
                             </WrapPanel>
-                            <CheckBox Content="Include archived conversations" IsChecked="{Binding IncludeArchivedSessions}" ToolTip="Show archived conversations in history." />
+                            <CheckBox Content="包含已归档会话" IsChecked="{Binding IncludeArchivedSessions}" ToolTip="在历史中显示已归档会话。" />
                         </StackPanel>
                         <ListBox
                             ItemsSource="{Binding VisibleHistoryItems}"
@@ -945,29 +945,29 @@
                                                     TextTrimming="CharacterEllipsis" />
                                             </DockPanel>
                                             <WrapPanel Margin="0,8,0,0">
-                                                <Button ToolTip="Open." AutomationProperties.Name="Open"
+                                                <Button ToolTip="打开。" AutomationProperties.Name="打开"
                                                     Command="{Binding DataContext.LoadHistoryCommand, ElementName=Root}"
                                                     CommandParameter="{Binding}"
                                                     Content="{x:Static catalog:KnownMonikers.OpenFolder}"
                                                     Style="{StaticResource NativeIconButtonStyle}" />
-                                                <Button ToolTip="Rename." AutomationProperties.Name="Rename"
+                                                <Button ToolTip="重命名。" AutomationProperties.Name="重命名"
                                                     Command="{Binding DataContext.BeginRenameHistoryCommand, ElementName=Root}"
                                                     CommandParameter="{Binding}"
                                                     Content="{x:Static catalog:KnownMonikers.Rename}"
                                                     Style="{StaticResource NativeIconButtonStyle}" />
-                                                <Button ToolTip="Save." AutomationProperties.Name="Save"
+                                                <Button ToolTip="保存。" AutomationProperties.Name="保存"
                                                     Command="{Binding DataContext.SaveRenameHistoryCommand, ElementName=Root}"
                                                     CommandParameter="{Binding}"
                                                     Content="{x:Static catalog:KnownMonikers.Save}"
                                                     Style="{StaticResource NativeIconButtonStyle}"
                                                     Visibility="{Binding IsRenaming, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                                <Button ToolTip="Discard." AutomationProperties.Name="Discard"
+                                                <Button ToolTip="放弃。" AutomationProperties.Name="放弃"
                                                     Command="{Binding DataContext.CancelRenameHistoryCommand, ElementName=Root}"
                                                     CommandParameter="{Binding}"
                                                     Content="{x:Static catalog:KnownMonikers.Cancel}"
                                                     Style="{StaticResource NativeIconButtonStyle}"
                                                     Visibility="{Binding IsRenaming, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                                <Button ToolTip="Delete." AutomationProperties.Name="Delete"
+                                                <Button ToolTip="删除。" AutomationProperties.Name="删除"
                                                     Command="{Binding DataContext.DeleteHistoryCommand, ElementName=Root}"
                                                     CommandParameter="{Binding}"
                                                     Content="{x:Static catalog:KnownMonikers.Delete}"
@@ -981,7 +981,7 @@
                     </DockPanel>
                 </TabItem>
 
-                <TabItem Header="Setup" Visibility="Collapsed">
+                <TabItem Header="配置" Visibility="Collapsed">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="12">
                             <TextBlock FontWeight="SemiBold" Text="{Binding CodexSetupSummary}" />
@@ -989,12 +989,12 @@
                                 Margin="0,6,0,10"
                                 Opacity="0.72"
                                 Text="{Binding CodexSetupInstructions}" />
-                            <Button AutomationProperties.Name="Check"
+                            <Button AutomationProperties.Name="检查"
                                 HorizontalAlignment="Left"
                                 Command="{Binding CheckPrerequisitesCommand}"
                                 Content="{x:Static catalog:KnownMonikers.Checkmark}"
                                 Style="{StaticResource NativeIconButtonStyle}"
-                                ToolTip="Check VSCodex prerequisites again." />
+                                ToolTip="重新检查 VSCodex 的前置条件。" />
                             <ItemsControl ItemsSource="{Binding Prerequisites}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -1024,7 +1024,7 @@
                                                     Opacity="0.66"
                                                     Text="{Binding Details}" />
                                                 <WrapPanel Margin="0,8,0,0">
-                                                    <Button AutomationProperties.Name="Copy command"
+                                                    <Button AutomationProperties.Name="复制命令"
                                                         Command="{Binding DataContext.CopyPrerequisiteCommand, ElementName=Root}"
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static catalog:KnownMonikers.Copy}"
@@ -1048,7 +1048,7 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="Context">
+                <TabItem Header="上下文">
                     <Grid Margin="8">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -1057,7 +1057,7 @@
                         <GroupBox
                             Grid.Row="0"
                             Margin="0,0,0,8"
-                            Header="@ files">
+                            Header="@ 文件">
                             <ListBox ItemsSource="{Binding FileSuggestions}" MouseDoubleClick="OnReferenceSuggestionDoubleClick">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -1069,7 +1069,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                         </GroupBox>
-                        <GroupBox Grid.Row="1" Header="# references">
+                        <GroupBox Grid.Row="1" Header="# 引用">
                             <ListBox ItemsSource="{Binding ContextSuggestions}" MouseDoubleClick="OnReferenceSuggestionDoubleClick">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -1085,7 +1085,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Skills" Visibility="Collapsed">
+                <TabItem Header="技能" Visibility="Collapsed">
                     <Grid Margin="8">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -1101,11 +1101,11 @@
                                 Style="{StaticResource SettingsMutedTextStyle}"
                                 Text="{Binding UserSkillsRoot}" />
                             <WrapPanel Grid.Column="1">
-                                <Button ToolTip="Save." AutomationProperties.Name="Save"
+                                <Button ToolTip="保存。" AutomationProperties.Name="保存"
                                     Command="{Binding SaveSkillsCommand}"
                                     Content="{x:Static catalog:KnownMonikers.Save}"
                                     Style="{StaticResource NativeIconButtonStyle}" />
-                                <Button ToolTip="Open folder." AutomationProperties.Name="Open folder"
+                                <Button ToolTip="打开文件夹。" AutomationProperties.Name="打开文件夹"
                                     Command="{Binding OpenSkillsFolderCommand}"
                                     Content="{x:Static catalog:KnownMonikers.OpenFolder}"
                                     Style="{StaticResource NativeIconButtonStyle}" />
@@ -1123,7 +1123,7 @@
                                     <TextBlock
                                         DockPanel.Dock="Top"
                                         Style="{StaticResource SettingsSectionHeadingStyle}"
-                                        Text="Enabled skills" />
+                                        Text="已启用的技能" />
                                     <ListBox BorderThickness="0" ItemsSource="{Binding Skills}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
@@ -1154,12 +1154,12 @@
                                     Margin="0,0,0,8"
                                     Style="{StaticResource SettingsSectionBorderStyle}">
                                     <StackPanel>
-                                        <TextBlock Style="{StaticResource SettingsSectionHeadingStyle}" Text="Create skill" />
-                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="Name" />
+                                        <TextBlock Style="{StaticResource SettingsSectionHeadingStyle}" Text="创建技能" />
+                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="名称" />
                                         <TextBox AcceptsReturn="False" Text="{Binding NewSkillName, UpdateSourceTrigger=PropertyChanged}" />
-                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="Description" />
+                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="描述" />
                                         <TextBox MinHeight="72" Text="{Binding NewSkillDescription, UpdateSourceTrigger=PropertyChanged}" />
-                                        <Button ToolTip="Create." AutomationProperties.Name="Create"
+                                        <Button ToolTip="创建。" AutomationProperties.Name="创建"
                                             HorizontalAlignment="Left"
                                             Command="{Binding CreateSkillCommand}"
                                             Content="{x:Static catalog:KnownMonikers.AddDocument}"
@@ -1168,9 +1168,9 @@
                                 </Border>
                                 <Border Style="{StaticResource SettingsSectionBorderStyle}">
                                     <StackPanel>
-                                        <TextBlock Style="{StaticResource SettingsSectionHeadingStyle}" Text="Additional root" />
+                                        <TextBlock Style="{StaticResource SettingsSectionHeadingStyle}" Text="附加根目录" />
                                         <TextBox AcceptsReturn="False" Text="{Binding SkillRootPathInput, UpdateSourceTrigger=PropertyChanged}" />
-                                        <Button ToolTip="Add folder." AutomationProperties.Name="Add folder"
+                                        <Button ToolTip="添加文件夹。" AutomationProperties.Name="添加文件夹"
                                             HorizontalAlignment="Left"
                                             Command="{Binding AddSkillRootCommand}"
                                             Content="{x:Static catalog:KnownMonikers.AddFolder}"
@@ -1191,19 +1191,19 @@
                         </Grid.RowDefinitions>
 
                         <WrapPanel Grid.Row="0" Margin="0,0,0,8">
-                            <Button ToolTip="Add stdio." AutomationProperties.Name="Add stdio"
+                            <Button ToolTip="添加 stdio。" AutomationProperties.Name="添加 stdio"
                                 Command="{Binding AddMcpStdioServerCommand}"
                                 Content="{x:Static catalog:KnownMonikers.AddLocalServer}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
-                            <Button ToolTip="Add URL." AutomationProperties.Name="Add URL"
+                            <Button ToolTip="添加 URL。" AutomationProperties.Name="添加 URL"
                                 Command="{Binding AddMcpUrlServerCommand}"
                                 Content="{x:Static catalog:KnownMonikers.AddLink}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
-                            <Button ToolTip="Save MCP." AutomationProperties.Name="Save MCP"
+                            <Button ToolTip="保存 MCP。" AutomationProperties.Name="保存 MCP"
                                 Command="{Binding SaveMcpServersCommand}"
                                 Content="{x:Static catalog:KnownMonikers.Save}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
-                            <Button ToolTip="Open config." AutomationProperties.Name="Open config"
+                            <Button ToolTip="打开配置。" AutomationProperties.Name="打开配置"
                                 Command="{Binding OpenCodexConfigCommand}"
                                 Content="{x:Static catalog:KnownMonikers.SettingsFile}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
@@ -1221,7 +1221,7 @@
                                     <TextBlock
                                         DockPanel.Dock="Top"
                                         Style="{StaticResource SettingsSectionHeadingStyle}"
-                                        Text="Servers" />
+                                        Text="服务器" />
                                     <ListBox
                                         BorderThickness="0"
                                         ItemsSource="{Binding McpServers}"
@@ -1242,7 +1242,7 @@
                                                         Style="{StaticResource SettingsMutedTextStyle}"
                                                         Text="{Binding EndpointSummary}" />
                                                 </StackPanel>
-                                                <Button ToolTip="Tools." AutomationProperties.Name="Tools"
+                                                <Button ToolTip="工具。" AutomationProperties.Name="工具"
                                                     Grid.Column="1"
                                                     Command="{Binding DataContext.SelectMcpServerCommand, ElementName=Root}"
                                                     CommandParameter="{Binding}"
@@ -1264,27 +1264,27 @@
                             <Border Grid.Column="2" Style="{StaticResource SettingsSectionBorderStyle}">
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                     <StackPanel>
-                                        <TextBlock Style="{StaticResource SettingsSectionHeadingStyle}" Text="Server config" />
-                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="Name" />
+                                        <TextBlock Style="{StaticResource SettingsSectionHeadingStyle}" Text="服务器配置" />
+                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="名称" />
                                         <TextBox AcceptsReturn="False" Text="{Binding SelectedMcpServer.Name, UpdateSourceTrigger=PropertyChanged}" />
-                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="Transport" />
+                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="传输方式" />
                                         <ComboBox SelectedValue="{Binding SelectedMcpServer.TransportType, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Content">
                                             <ComboBoxItem Content="stdio" />
                                             <ComboBoxItem Content="url" />
                                         </ComboBox>
-                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="Command" />
+                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="命令" />
                                         <TextBox AcceptsReturn="False" Text="{Binding SelectedMcpServer.Command, UpdateSourceTrigger=PropertyChanged}" />
-                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="Arguments (one per line)" />
+                                        <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="参数（每行一个）" />
                                         <TextBox MinHeight="60" Text="{Binding SelectedMcpServer.ArgumentsText, UpdateSourceTrigger=PropertyChanged}" />
                                         <TextBlock Style="{StaticResource FieldLabelTextBlock}" Text="URL" />
                                         <TextBox AcceptsReturn="False" Text="{Binding SelectedMcpServer.Url, UpdateSourceTrigger=PropertyChanged}" />
                                         <WrapPanel>
-                                            <Button ToolTip="List tools." AutomationProperties.Name="List tools"
+                                            <Button ToolTip="列出工具。" AutomationProperties.Name="列出工具"
                                                 Command="{Binding SelectMcpServerCommand}"
                                                 CommandParameter="{Binding SelectedMcpServer}"
                                                 Content="{x:Static catalog:KnownMonikers.ToolBox}"
                                                 Style="{StaticResource NativeIconButtonStyle}" />
-                                            <Button ToolTip="Remove." AutomationProperties.Name="Remove"
+                                            <Button ToolTip="移除。" AutomationProperties.Name="移除"
                                                 Command="{Binding RemoveMcpServerCommand}"
                                                 CommandParameter="{Binding SelectedMcpServer}"
                                                 Content="{x:Static catalog:KnownMonikers.Delete}"
@@ -1307,7 +1307,7 @@
                                     <TextBlock
                                         DockPanel.Dock="Top"
                                         Style="{StaticResource SettingsSectionHeadingStyle}"
-                                        Text="Tools" />
+                                        Text="工具" />
                                     <ListBox
                                         BorderThickness="0"
                                         ItemsSource="{Binding McpToolSuggestions}"
@@ -1326,7 +1326,7 @@
                                                     Opacity="0.72"
                                                     Text="{Binding Description}"
                                                     TextTrimming="CharacterEllipsis" />
-                                                <Button ToolTip="Use tool." AutomationProperties.Name="Use tool"
+                                                <Button ToolTip="使用工具。" AutomationProperties.Name="使用工具"
                                                     Grid.Row="2"
                                                     HorizontalAlignment="Left"
                                                     Command="{Binding DataContext.SelectMcpToolCommand, ElementName=Root}"
@@ -1351,8 +1351,8 @@
                                     <TextBlock
                                         DockPanel.Dock="Top"
                                         Style="{StaticResource SettingsSectionHeadingStyle}"
-                                        Text="Tool input" />
-                                    <Button ToolTip="Insert MCP tool use." AutomationProperties.Name="Insert MCP tool use"
+                                        Text="工具输入" />
+                                    <Button ToolTip="插入 MCP 工具调用。" AutomationProperties.Name="插入 MCP 工具调用"
                                         HorizontalAlignment="Left"
                                         Command="{Binding InsertMcpToolCommand}"
                                         Content="{x:Static catalog:KnownMonikers.Link}"
@@ -1382,22 +1382,22 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Memory">
+                <TabItem Header="记忆">
                     <DockPanel Margin="8">
                         <WrapPanel DockPanel.Dock="Top">
-                            <Button ToolTip="Save user memory." AutomationProperties.Name="Save user memory"
+                            <Button ToolTip="保存用户记忆。" AutomationProperties.Name="保存用户记忆"
                                 Command="{Binding AddUserMemoryCommand}"
                                 Content="{x:Static catalog:KnownMonikers.Save}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
-                            <Button ToolTip="Save workspace memory." AutomationProperties.Name="Save workspace memory"
+                            <Button ToolTip="保存工作区记忆。" AutomationProperties.Name="保存工作区记忆"
                                 Command="{Binding AddWorkspaceMemoryCommand}"
                                 Content="{x:Static catalog:KnownMonikers.Save}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
-                            <Button AutomationProperties.Name="Scan project"
+                            <Button AutomationProperties.Name="扫描项目"
                                 Command="{Binding ScanProjectMemoryCommand}"
                                 Content="{x:Static catalog:KnownMonikers.SearchFolderOpened}"
                                 Style="{StaticResource NativeIconButtonStyle}"
-                                ToolTip="Run a full ReactiveMemory ProjectMiner scan for the current solution after Visual Studio has loaded." />
+                                ToolTip="在 Visual Studio 加载完成后，对当前解决方案执行完整的 ReactiveMemory ProjectMiner 扫描。" />
                         </WrapPanel>
                         <ListBox ItemsSource="{Binding Memories}">
                             <ListBox.ItemTemplate>
@@ -1412,7 +1412,7 @@
                     </DockPanel>
                 </TabItem>
 
-                <TabItem Header="Agents">
+                <TabItem Header="智能体">
                     <Grid Margin="8">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -1427,7 +1427,7 @@
                                 <TextBlock
                                     DockPanel.Dock="Top"
                                     Style="{StaticResource SettingsSectionHeadingStyle}"
-                                    Text="Roles" />
+                                    Text="角色" />
                                 <ListBox BorderThickness="0" ItemsSource="{Binding AgentRoles}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
@@ -1462,7 +1462,7 @@
                                                     <TextBlock
                                                         Margin="0,0,6,0"
                                                         Style="{StaticResource FieldLabelTextBlock}"
-                                                        Text="Model" />
+                                                        Text="模型" />
                                                     <ComboBox
                                                         Grid.Column="1"
                                                         MinWidth="140"
@@ -1473,7 +1473,7 @@
                                                         Grid.Column="2"
                                                         Margin="8,0,6,0"
                                                         Style="{StaticResource FieldLabelTextBlock}"
-                                                        Text="Mode" />
+                                                        Text="模式" />
                                                     <ComboBox
                                                         Grid.Column="3"
                                                         ItemsSource="{Binding DataContext.AgentModelSelectionModeOptions, ElementName=Root}"
@@ -1490,7 +1490,7 @@
                                 <TextBlock
                                     DockPanel.Dock="Top"
                                     Style="{StaticResource SettingsSectionHeadingStyle}"
-                                    Text="Plan" />
+                                    Text="计划" />
                                 <ListBox BorderThickness="0" ItemsSource="{Binding OrchestrationSections}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
@@ -1507,14 +1507,14 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="Attachments">
+                <TabItem Header="附件">
                     <DockPanel Margin="8">
                         <WrapPanel DockPanel.Dock="Top">
-                            <Button ToolTip="Attach files." AutomationProperties.Name="Attach files"
+                            <Button ToolTip="附加文件。" AutomationProperties.Name="附加文件"
                                 Command="{Binding AddImageAttachmentCommand}"
                                 Content="{x:Static catalog:KnownMonikers.AddAttachment}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
-                            <Button ToolTip="Clear attachments." AutomationProperties.Name="Clear attachments"
+                            <Button ToolTip="清除附件。" AutomationProperties.Name="清除附件"
                                 Command="{Binding ClearAttachmentsCommand}"
                                 Content="{x:Static catalog:KnownMonikers.DeleteAttachment}"
                                 Style="{StaticResource NativeIconButtonStyle}" />
@@ -1531,26 +1531,26 @@
                         </ListBox>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Worktrees">
+                <TabItem Header="工作树">
                     <DockPanel Margin="8">
                         <StackPanel DockPanel.Dock="Top">
-                            <TextBlock Text="Managed local Git worktrees" FontWeight="SemiBold" />
-                            <TextBlock Margin="0,4,0,8" TextWrapping="Wrap" Text="Create a CP_ branch in a separate checkout. Archive parks the checkout with a verified recovery snapshot; restore returns it. Active, pinned, external and Git-locked checkouts are protected." />
+                            <TextBlock Text="托管的本地 Git 工作树" FontWeight="SemiBold" />
+                            <TextBlock Margin="0,4,0,8" TextWrapping="Wrap" Text="在独立检出中创建 CP_ 分支。归档会把该检出连同已验证的恢复快照一起收起，恢复则将其还原。处于活动、已固定、外部以及被 Git 锁定的检出均受保护。" />
                             <WrapPanel>
-                                <TextBox Width="180" Text="{Binding NewWorktreeBranch, UpdateSourceTrigger=PropertyChanged}" ToolTip="New branch name beginning with CP_" />
+                                <TextBox Width="180" Text="{Binding NewWorktreeBranch, UpdateSourceTrigger=PropertyChanged}" ToolTip="以 CP_ 开头的新分支名" />
                                 <Button
                                     Command="{Binding CreateWorktreeCommand}"
                                     Margin="4,0"
                                     Content="{x:Static catalog:KnownMonikers.Branch}"
                                     Style="{StaticResource NativeIconButtonStyle}"
-                                    AutomationProperties.Name="Create managed worktree"
-                                    ToolTip="Create a new CP_ branch and isolated checkout from committed HEAD." />
+                                    AutomationProperties.Name="创建托管工作树"
+                                    ToolTip="基于已提交的 HEAD 创建新的 CP_ 分支与隔离检出。" />
                                 <Button
                                     Command="{Binding RefreshWorktreesCommand}"
                                     Content="{x:Static catalog:KnownMonikers.Refresh}"
                                     Style="{StaticResource NativeIconButtonStyle}"
-                                    AutomationProperties.Name="Refresh managed worktrees"
-                                    ToolTip="Refresh Git checkouts and managed archive state." />
+                                    AutomationProperties.Name="刷新托管工作树"
+                                    ToolTip="刷新 Git 检出与托管归档状态。" />
                             </WrapPanel>
                         </StackPanel>
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -1568,8 +1568,8 @@
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static catalog:KnownMonikers.OpenFolder}"
                                                         Style="{StaticResource NativeIconButtonStyle}"
-                                                        AutomationProperties.Name="Open worktree folder"
-                                                        ToolTip="Open this checkout in the file browser." />
+                                                        AutomationProperties.Name="打开工作树文件夹"
+                                                        ToolTip="在文件浏览器中打开此检出。" />
                                                     <Button
                                                         Margin="4,0"
                                                         IsEnabled="{Binding IsManaged}"
@@ -1578,13 +1578,13 @@
                                                         <Button.Style>
                                                             <Style TargetType="Button" BasedOn="{StaticResource NativeIconButtonStyle}">
                                                                 <Setter Property="Content" Value="{x:Static catalog:KnownMonikers.Pin}" />
-                                                                <Setter Property="ToolTip" Value="Pin this worktree to protect it from archival." />
-                                                                <Setter Property="AutomationProperties.Name" Value="Pin this worktree to protect it from archival." />
+                                                                <Setter Property="ToolTip" Value="固定此工作树，防止其被归档。" />
+                                                                <Setter Property="AutomationProperties.Name" Value="固定此工作树，防止其被归档。" />
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding IsPinned}" Value="True">
                                                                         <Setter Property="Content" Value="{x:Static catalog:KnownMonikers.Unpin}" />
-                                                                        <Setter Property="ToolTip" Value="Unpin this worktree." />
-                                                                        <Setter Property="AutomationProperties.Name" Value="Unpin this worktree." />
+                                                                        <Setter Property="ToolTip" Value="取消固定此工作树。" />
+                                                                        <Setter Property="AutomationProperties.Name" Value="取消固定此工作树。" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -1597,13 +1597,13 @@
                                                         <Button.Style>
                                                             <Style TargetType="Button" BasedOn="{StaticResource NativeIconButtonStyle}">
                                                                 <Setter Property="Content" Value="{x:Static catalog:KnownMonikers.FolderClosed}" />
-                                                                <Setter Property="ToolTip" Value="Archive this checkout with a verified recovery snapshot." />
-                                                                <Setter Property="AutomationProperties.Name" Value="Archive this checkout with a verified recovery snapshot." />
+                                                                <Setter Property="ToolTip" Value="在保留已验证恢复快照的前提下归档此检出。" />
+                                                                <Setter Property="AutomationProperties.Name" Value="在保留已验证恢复快照的前提下归档此检出。" />
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding IsArchived}" Value="True">
                                                                         <Setter Property="Content" Value="{x:Static catalog:KnownMonikers.OpenFolder}" />
-                                                                        <Setter Property="ToolTip" Value="Restore this archived checkout to its managed location." />
-                                                                        <Setter Property="AutomationProperties.Name" Value="Restore this archived checkout to its managed location." />
+                                                                        <Setter Property="ToolTip" Value="将此已归档检出还原到其托管位置。" />
+                                                                        <Setter Property="AutomationProperties.Name" Value="将此已归档检出还原到其托管位置。" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -1618,25 +1618,25 @@
                         </ScrollViewer>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Automations">
+                <TabItem Header="自动化">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="8">
-                            <TextBlock Text="Local schedules run while this tool window is loaded in Visual Studio. Missed runs coalesce into one run. Saved schedules start paused." TextWrapping="Wrap" />
+                            <TextBlock Text="本地计划会在此工具窗口于 Visual Studio 中打开期间运行。错过的执行会合并为一次。保存后的计划默认为暂停状态。" TextWrapping="Wrap" />
                             <TextBlock Text="{Binding AutomationStatus}" TextWrapping="Wrap" Margin="0,8,0,0" />
-                            <TextBlock Text="Name" Margin="0,8,0,2" />
+                            <TextBlock Text="名称" Margin="0,8,0,2" />
                             <TextBox Text="{Binding AutomationName, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Text="Prompt" Margin="0,8,0,2" />
+                            <TextBlock Text="提示词" Margin="0,8,0,2" />
                             <TextBox Text="{Binding AutomationPrompt, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" MinHeight="64" TextWrapping="Wrap" />
-                            <TextBlock Text="Interval (minutes)" Margin="0,8,0,2" />
+                            <TextBlock Text="间隔（分钟）" Margin="0,8,0,2" />
                             <TextBox Text="{Binding AutomationMinutes, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}" />
                             <Button
                                 Command="{Binding AddAutomationCommand}"
                                 Margin="0,8,0,8"
                                 Content="{x:Static catalog:KnownMonikers.Save}"
                                 Style="{StaticResource NativeIconButtonStyle}"
-                                AutomationProperties.Name="Save paused automation"
-                                ToolTip="Save this prompt and interval for the current workspace. The schedule starts paused." />
-                            <TextBlock Text="Schedules execute in a separate read-only CLI process with no interactive approvals. Results and unread state persist locally." TextWrapping="Wrap" />
+                                AutomationProperties.Name="保存已暂停的自动化"
+                                ToolTip="为当前工作区保存此提示词与间隔。计划保存后为暂停状态。" />
+                            <TextBlock Text="计划会在独立的只读 CLI 进程中执行，不进行交互式批准。结果与未读状态都保存在本地。" TextWrapping="Wrap" />
                             <ItemsControl ItemsSource="{Binding Automations}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -1645,9 +1645,9 @@
                                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
                                                 <TextBlock Text="{Binding Workspace}" TextWrapping="Wrap" />
                                                 <TextBlock Text="{Binding Prompt}" TextWrapping="Wrap" />
-                                                <TextBlock Text="{Binding IntervalMinutes, StringFormat='Interval: {0} minutes'}" />
-                                                <TextBlock Text="{Binding Enabled, StringFormat='Enabled: {0}'}" />
-                                                <TextBlock Text="{Binding NextDue, StringFormat='Next due (UTC): {0:g}'}" />
+                                                <TextBlock Text="{Binding IntervalMinutes, StringFormat='间隔：{0} 分钟'}" />
+                                                <TextBlock Text="{Binding Enabled, StringFormat='已启用：{0}'}" />
+                                                <TextBlock Text="{Binding NextDue, StringFormat='下次到期（UTC）：{0:g}'}" />
                                                 <WrapPanel>
                                                     <Button
                                                         Command="{Binding DataContext.ToggleAutomationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -1655,13 +1655,13 @@
                                                         <Button.Style>
                                                             <Style TargetType="Button" BasedOn="{StaticResource NativeIconButtonStyle}">
                                                                 <Setter Property="Content" Value="{x:Static catalog:KnownMonikers.Play}" />
-                                                                <Setter Property="ToolTip" Value="Enable this paused automation." />
-                                                                <Setter Property="AutomationProperties.Name" Value="Enable this paused automation." />
+                                                                <Setter Property="ToolTip" Value="启用此已暂停的自动化。" />
+                                                                <Setter Property="AutomationProperties.Name" Value="启用此已暂停的自动化。" />
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding Enabled}" Value="True">
                                                                         <Setter Property="Content" Value="{x:Static catalog:KnownMonikers.Pause}" />
-                                                                        <Setter Property="ToolTip" Value="Pause future runs of this automation." />
-                                                                        <Setter Property="AutomationProperties.Name" Value="Pause future runs of this automation." />
+                                                                        <Setter Property="ToolTip" Value="暂停此自动化后续的运行。" />
+                                                                        <Setter Property="AutomationProperties.Name" Value="暂停此自动化后续的运行。" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -1672,19 +1672,19 @@
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static catalog:KnownMonikers.Checkmark}"
                                                         Style="{StaticResource NativeIconButtonStyle}"
-                                                        AutomationProperties.Name="Mark automation result read"
-                                                        ToolTip="Acknowledge the latest automation result." />
+                                                        AutomationProperties.Name="将自动化结果标记为已读"
+                                                        ToolTip="将该自动化的最新结果标记为已读。" />
                                                     <Button
                                                         Command="{Binding DataContext.DeleteAutomationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
                                                         Content="{x:Static catalog:KnownMonikers.Delete}"
                                                         Style="{StaticResource NativeIconButtonStyle}"
-                                                        AutomationProperties.Name="Delete automation"
-                                                        ToolTip="Delete this schedule and its latest notification." />
+                                                        AutomationProperties.Name="删除自动化"
+                                                        ToolTip="删除该计划及其最新通知。" />
                                                 </WrapPanel>
-                                                <TextBlock Text="{Binding Unread, StringFormat='Unread result: {0}'}" />
-                                                <TextBlock Text="{Binding LastFailed, StringFormat='Last run failed: {0}'}" />
-                                                <TextBlock Text="{Binding LastCompleted, StringFormat='Last completed (UTC): {0:g}'}" />
+                                                <TextBlock Text="{Binding Unread, StringFormat='未读结果：{0}'}" />
+                                                <TextBlock Text="{Binding LastFailed, StringFormat='最近运行失败：{0}'}" />
+                                                <TextBlock Text="{Binding LastCompleted, StringFormat='最近完成（UTC）：{0:g}'}" />
                                                 <TextBox Text="{Binding LastResult, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" MaxHeight="240" VerticalScrollBarVisibility="Auto" />
                                             </StackPanel>
                                         </Border>
@@ -1730,7 +1730,7 @@
                                         <TextBlock
                                             FontWeight="SemiBold"
                                             Text="{Binding Reason}" />
-                                        <Expander Header="Request details" IsExpanded="False" Margin="0,3,0,6"
+                                        <Expander Header="请求详情" IsExpanded="False" Margin="0,3,0,6"
                                                   Foreground="{DynamicResource {x:Static vsui:EnvironmentColors.ToolWindowTextBrushKey}}">
                                             <TextBox MaxHeight="100" IsReadOnly="True" Text="{Binding ArgumentsPreview}"
                                                      FontFamily="Consolas" FontSize="11" TextWrapping="Wrap"
@@ -1738,17 +1738,17 @@
                                         </Expander>
                                         <controls:ElicitationFormControl Form="{Binding Form}" />
                                         <WrapPanel>
-                                            <Button ToolTip="Approve." AutomationProperties.Name="Approve"
+                                            <Button ToolTip="批准。" AutomationProperties.Name="批准"
                                                 Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}"
                                                 Content="{x:Static catalog:KnownMonikers.Play}"
                                                 Style="{StaticResource NativeIconButtonStyle}" />
-                                            <Button ToolTip="Decline." AutomationProperties.Name="Decline"
+                                            <Button ToolTip="拒绝。" AutomationProperties.Name="拒绝"
                                                 Command="{Binding DataContext.DeclineRequestCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}"
                                                 Content="{x:Static catalog:KnownMonikers.Cancel}"
                                                 Style="{StaticResource NativeIconButtonStyle}" />
-                                            <Button ToolTip="Cancel." AutomationProperties.Name="Cancel"
+                                            <Button ToolTip="取消。" AutomationProperties.Name="取消"
                                                 Command="{Binding DataContext.CancelRequestCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}"
                                                 Content="{x:Static catalog:KnownMonikers.Cancel}"
@@ -1765,7 +1765,7 @@
                         FontSize="20"
                         FontWeight="SemiBold"
                         Foreground="{DynamicResource {x:Static vsui:EnvironmentColors.ToolWindowTextBrushKey}}"
-                        Text="What should we build?">
+                        Text="要构建什么？">
                         <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed" /><Style.Triggers><DataTrigger Binding="{Binding RunActivityRoots.Count}" Value="0"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                     </TextBlock>
                     <TextBlock
@@ -1773,47 +1773,47 @@
                         HorizontalAlignment="Center"
                         FontSize="11"
                         Foreground="{DynamicResource {x:Static vsui:EnvironmentColors.SystemGrayTextBrushKey}}"
-                        Text="Use # for selected code, / for commands, and @ for files."
-                        ToolTip="Attach workspace context with # or @, or choose a focused command with /." />
-                    <WrapPanel x:Name="ConversationActionPanel" AutomationProperties.Name="Conversation actions">
-                        <Button Command="{Binding ReviewSelectionCommand}" AutomationProperties.Name="Review selected code"
-                                ToolTip="Review selected code." Style="{StaticResource IconButtonStyle}">
+                        Text="使用 # 引用选中代码、/ 调用命令、@ 引用文件。"
+                        ToolTip="用 # 或 @ 附加工作区上下文，或用 / 选择一条聚焦命令。" />
+                    <WrapPanel x:Name="ConversationActionPanel" AutomationProperties.Name="会话操作">
+                        <Button Command="{Binding ReviewSelectionCommand}" AutomationProperties.Name="审阅选中代码"
+                                ToolTip="审阅选中代码。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CodeReview}" />
                         </Button>
-                        <Button Command="{Binding ReviewActiveFileCommand}" AutomationProperties.Name="Review active file changes"
-                                ToolTip="Compare the active editor file with Git HEAD." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding ReviewActiveFileCommand}" AutomationProperties.Name="审阅当前文件的更改"
+                                ToolTip="将当前编辑器文件与 Git HEAD 比较。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.CompareFiles}" />
                         </Button>
-                        <Button Command="{Binding DebugSelectionCommand}" AutomationProperties.Name="Debug active errors"
-                                ToolTip="Debug active errors." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding DebugSelectionCommand}" AutomationProperties.Name="调试活动错误"
+                                ToolTip="调试当前活动的错误。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Repair}" />
                         </Button>
-                        <Button Command="{Binding CreateTestForSelectionCommand}" AutomationProperties.Name="Write tests for selected code"
-                                ToolTip="Write tests for selected code." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding CreateTestForSelectionCommand}" AutomationProperties.Name="为选中代码编写测试"
+                                ToolTip="为选中代码编写测试。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Test}" />
                         </Button>
-                        <Button Command="{Binding CreatePlanCommand}" AutomationProperties.Name="Plan work"
-                                ToolTip="Plan work." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding CreatePlanCommand}" AutomationProperties.Name="规划工作"
+                                ToolTip="规划工作。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.TaskList}" />
                         </Button>
-                        <Button Command="{Binding RefreshCommand}" AutomationProperties.Name="Refresh workspace references"
-                                ToolTip="Refresh workspace references." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding RefreshCommand}" AutomationProperties.Name="刷新工作区引用"
+                                ToolTip="刷新工作区引用。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Refresh}" />
                         </Button>
-                        <Button Command="{Binding ExplainSelectionCommand}" AutomationProperties.Name="Explain selected code"
-                                ToolTip="Explain selected code." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding ExplainSelectionCommand}" AutomationProperties.Name="解释选中代码"
+                                ToolTip="解释选中代码。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}" />
                         </Button>
-                        <Button Command="{Binding FixSelectionCommand}" AutomationProperties.Name="Fix selected code"
-                                ToolTip="Fix selected code." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding FixSelectionCommand}" AutomationProperties.Name="修复选中代码"
+                                ToolTip="修复选中代码。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Repair}" />
                         </Button>
-                        <Button Command="{Binding OptimizeSelectionCommand}" AutomationProperties.Name="Optimize selected code"
-                                ToolTip="Optimize selected code." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding OptimizeSelectionCommand}" AutomationProperties.Name="优化选中代码"
+                                ToolTip="优化选中代码。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Performance}" />
                         </Button>
-                        <Button Command="{Binding GenerateDocsCommand}" AutomationProperties.Name="Document selected code"
-                                ToolTip="Document selected code." Style="{StaticResource IconButtonStyle}">
+                        <Button Command="{Binding GenerateDocsCommand}" AutomationProperties.Name="为选中代码生成文档"
+                                ToolTip="为选中代码生成文档。" Style="{StaticResource IconButtonStyle}">
                             <imaging:CrispImage Width="16" Height="16" Moniker="{x:Static catalog:KnownMonikers.Document}" />
                         </Button>
                     </WrapPanel>
@@ -1828,7 +1828,7 @@
                     LostMouseCapture="OnPromptResizeLostMouseCapture"
                     PreviewMouseLeftButtonUp="OnPromptResizeMouseLeftButtonUp"
                     Style="{StaticResource PromptResizeThumbStyle}"
-                    ToolTip="Drag to resize the prompt input." />
+                    ToolTip="拖动可调整提示词输入框的大小。" />
 
                 <TextBox
                     x:Name="PromptTextBox"
@@ -1837,13 +1837,13 @@
                     MinHeight="32"
                     MaxHeight="600"
                     AllowDrop="True"
-                    AutomationProperties.Name="VSCodex prompt input"
+                    AutomationProperties.Name="VSCodex 提示词输入框"
                     Drop="OnPromptDrop"
                     PreviewDragOver="OnPromptPreviewDragOver"
                     PreviewKeyDown="OnPromptPreviewKeyDown"
                     Style="{StaticResource ComposerPromptTextBoxStyle}"
                     Text="{Binding Prompt, UpdateSourceTrigger=PropertyChanged}"
-                    ToolTip="Ask VSCodex. Enter uses the configured follow-up behavior; Ctrl+Enter uses the opposite; Shift+Enter inserts a newline; Esc stops. Use /MCP, /debug, /test, /plan, @filename, or #selection." />
+                    ToolTip="向 VSCodex 提问。Enter 按已配置的后续行为执行，Ctrl+Enter 执行相反行为，Shift+Enter 换行，Esc 停止。可使用 /MCP、/debug、/test、/plan、@文件名 或 #选中内容。" />
 
                 <Popup
                     x:Name="PromptSuggestionPopup"
@@ -1902,84 +1902,84 @@
                     VerticalAlignment="Center">
                     <TextBlock
                         Style="{StaticResource ComposerChipTextStyle}"
-                        Text="Access" />
+                        Text="访问权限" />
                     <ComboBox
                         Width="132"
                         MinWidth="118"
-                        AutomationProperties.Name="VSCodex access level"
+                        AutomationProperties.Name="VSCodex 访问级别"
                         IsHitTestVisible="{Binding CanEditSettings}"
                         ItemsSource="{Binding AccessLevelOptions}"
                         SelectedItem="{Binding AccessLevel}"
-                        ToolTip="Filesystem access for this VSCodex request." />
+                        ToolTip="此 VSCodex 请求的文件系统访问权限。" />
                     <TextBlock
                         Margin="4,0,5,6"
                         Style="{StaticResource ComposerChipTextStyle}"
-                        Text="Mode" />
+                        Text="模式" />
                     <ComboBox
                         Width="118"
                         MinWidth="118"
-                        AutomationProperties.Name="VSCodex request mode"
+                        AutomationProperties.Name="VSCodex 请求模式"
                         IsHitTestVisible="{Binding CanEditSettings}"
                         ItemsSource="{Binding ModeOptions}"
                         SelectedItem="{Binding Mode}"
-                        ToolTip="VSCodex mode for this request." />
+                        ToolTip="此请求的 VSCodex 模式。" />
                     <TextBlock
                         Margin="4,0,5,6"
                         Style="{StaticResource ComposerChipTextStyle}"
-                        Text="Model" />
+                        Text="模型" />
                     <ComboBox
                         Width="150"
                         MinWidth="118"
-                        AutomationProperties.Name="VSCodex model"
+                        AutomationProperties.Name="VSCodex 模型"
                         IsEditable="True"
                         IsHitTestVisible="{Binding CanEditSettings}"
                         ItemsSource="{Binding ModelOptions}"
                         Text="{Binding SelectedModel, UpdateSourceTrigger=PropertyChanged}"
-                        ToolTip="Primary model for this request." />
+                        ToolTip="此请求使用的主模型。" />
                     <TextBlock
                         Margin="4,0,5,6"
                         Style="{StaticResource ComposerChipTextStyle}"
-                        Text="Reasoning" />
+                        Text="推理" />
                     <ComboBox
                         Width="112"
                         MinWidth="96"
-                        AutomationProperties.Name="VSCodex reasoning effort"
+                        AutomationProperties.Name="VSCodex 推理强度"
                         IsEditable="True"
                         IsHitTestVisible="{Binding CanEditSettings}"
                         ItemsSource="{Binding ReasoningOptions}"
                         Text="{Binding SelectedReasoning, UpdateSourceTrigger=PropertyChanged, Delay=250}"
-                        ToolTip="Reasoning effort for this request." />
+                        ToolTip="此请求的推理强度。" />
                     <Button
-                        AutomationProperties.Name="Steer active VSCodex turn"
+                        AutomationProperties.Name="引导当前 VSCodex 回合"
                         Command="{Binding SteerCommand}"
                         Content="{x:Static catalog:KnownMonikers.Play}"
                         Style="{StaticResource NativeIconButtonStyle}"
-                        ToolTip="Add the current prompt to the active turn immediately."
+                        ToolTip="立即把当前提示词加入正在进行的回合。"
                         Visibility="{Binding IsPauseControlVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button
-                        AutomationProperties.Name="Queue VSCodex follow-up"
+                        AutomationProperties.Name="排队 VSCodex 后续消息"
                         Command="{Binding QueueCommand}"
                         Content="{x:Static catalog:KnownMonikers.AddToCollection}"
                         Style="{StaticResource NativeIconButtonStyle}"
-                        ToolTip="Run the current prompt after this turn."
+                        ToolTip="在此回合结束后运行当前提示词。"
                         Visibility="{Binding IsPauseControlVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button
-                        AutomationProperties.Name="Pause VSCodex request"
+                        AutomationProperties.Name="暂停 VSCodex 请求"
                         Command="{Binding PauseCommand}"
                         Content="{x:Static catalog:KnownMonikers.Pause}"
                         Style="{StaticResource NativeIconButtonStyle}"
-                        ToolTip="Interrupt this turn and save its context in ReactiveMemory."
+                        ToolTip="中断此回合，并将其上下文保存到 ReactiveMemory。"
                         Visibility="{Binding IsPauseControlVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button
-                        AutomationProperties.Name="Resume paused VSCodex request"
+                        AutomationProperties.Name="恢复已暂停的 VSCodex 请求"
                         Command="{Binding ResumeCommand}"
                         Content="{x:Static catalog:KnownMonikers.Play}"
                         Style="{StaticResource NativeIconButtonStyle}"
-                        ToolTip="Restore the durable ReactiveMemory checkpoint and continue."
+                        ToolTip="还原持久化的 ReactiveMemory 检查点并继续。"
                         Visibility="{Binding IsResumeControlVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button
                         VerticalAlignment="Center"
-                        AutomationProperties.Name="Toggle VSCodex voice input"
+                        AutomationProperties.Name="切换 VSCodex 语音输入"
                         Click="OnToggleVoiceInputClick"
                         Style="{StaticResource VoiceInputButtonStyle}">
                         <Grid Width="16" Height="16">
@@ -2019,11 +2019,11 @@
                         FontSize="11"
                         FontWeight="SemiBold"
                         Foreground="{DynamicResource {x:Static vsui:EnvironmentColors.ToolWindowValidationErrorTextBrushKey}}"
-                        Text="Listening"
+                        Text="聆听中"
                         Visibility="{Binding IsListeningToVoice, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button
                         VerticalAlignment="Center"
-                        AutomationProperties.Name="Send or stop VSCodex request"
+                        AutomationProperties.Name="发送或停止 VSCodex 请求"
                         Click="OnRunControlClick"
                         Style="{StaticResource PrimaryRunButtonStyle}">
                         <Grid Width="18" Height="18">
@@ -2078,10 +2078,10 @@
                     <Button
                         Margin="4,0,0,6"
                         VerticalAlignment="Center"
-                        AutomationProperties.Name="Stop VSCodex request"
+                        AutomationProperties.Name="停止 VSCodex 请求"
                         Click="OnStopControlClick"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Stop the active VSCodex request. Queued prompts are preserved."
+                        ToolTip="停止当前 VSCodex 请求。已排队的提示词会保留。"
                         Visibility="{Binding IsPersistentStopControlVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid Width="16" Height="16">
                             <controls:ProgressRing
@@ -2116,7 +2116,7 @@
                 <TextBlock Text="{Binding Status}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
             </StatusBarItem>
             <Separator />
-            <StatusBarItem Content="Thread:" />
+            <StatusBarItem Content="线程：" />
             <StatusBarItem Content="{Binding ThreadId}" />
             <Separator />
             <StatusBarItem Content="{Binding RateLimitUpdatedAt}" />

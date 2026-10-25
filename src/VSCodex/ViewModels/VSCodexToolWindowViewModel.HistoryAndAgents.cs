@@ -72,7 +72,7 @@ public sealed partial class VSCodexToolWindowViewModel
         CodexSessionDocument? loaded = _sessionStore.Load(item.Id);
         if (loaded is null)
         {
-            Status = "VSCodex history item could not be loaded";
+            Status = "无法加载该 VSCodex 历史项";
             RefreshHistory();
             return;
         }
@@ -92,7 +92,7 @@ public sealed partial class VSCodexToolWindowViewModel
         Attachments.Clear();
         SelectedHistoryItem = VisibleHistoryItems.FirstOrDefault(candidate => candidate.Id == item.Id) ?? item;
         IsToolPanelOpen = false;
-        Status = (loadedFromAnotherWorkspace ? "Loaded history for the current workspace without reusing the previous Codex thread" : ($"Loaded history: {item.Title}"));
+        Status = (loadedFromAnotherWorkspace ? "已加载当前工作区的历史，且未复用之前的 Codex 线程" : ($"已加载历史：{item.Title}"));
         UpdateAnalytics(Prompt);
     }
 
@@ -122,7 +122,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
 
         RefreshHistory();
-        Status = "Deleted history item";
+        Status = "已删除历史项";
     }
 
     /// <summary>Performs the begin Rename History Item operation.</summary>
@@ -157,7 +157,7 @@ public sealed partial class VSCodexToolWindowViewModel
         CodexSessionDocument? loaded = _sessionStore.Load(item.Id);
         if (loaded is null)
         {
-            Status = "VSCodex history item could not be renamed";
+            Status = "无法重命名该 VSCodex 历史项";
             RefreshHistory();
             return;
         }
@@ -171,7 +171,7 @@ public sealed partial class VSCodexToolWindowViewModel
         _sessionStore.Save(loaded);
         item.IsRenaming = false;
         RefreshHistory();
-        Status = "Renamed history item";
+        Status = "已重命名历史项";
     }
 
     /// <summary>Saves current Session If Needed.</summary>

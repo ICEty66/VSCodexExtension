@@ -70,7 +70,7 @@ public sealed partial class VSCodexToolWindowViewModel
         catch (Exception exception)
         {
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-            Status = $"Codex model discovery failed; saved model choices remain available: {exception.Message}";
+            Status = $"Codex 模型发现失败；已保存的模型选项仍然可用：{exception.Message}";
         }
     }
 }

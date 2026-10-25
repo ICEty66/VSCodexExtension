@@ -17,7 +17,7 @@ public static class ServerRequestProtocol
     {
         if (requestId is null || requestId.Type == JTokenType.Null || (requestId.Type != JTokenType.String && requestId.Type != JTokenType.Integer && requestId.Type != JTokenType.Float))
         {
-            throw new ArgumentException("A string or numeric server request identifier is required.", nameof(requestId));
+            throw new ArgumentException("需要提供字符串或数字形式的服务器请求标识。", nameof(requestId));
         }
 
         return new JObject { ["command"] = "respondServerRequest", [nameof(requestId)] = requestId.DeepClone(), [nameof(result)] = result.DeepClone() };

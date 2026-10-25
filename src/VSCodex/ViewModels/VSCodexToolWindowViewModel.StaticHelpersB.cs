@@ -26,13 +26,13 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         return role switch
         {
-            CodexMessageRole.Assistant => "Final assistant response",
-            CodexMessageRole.Mcp => "MCP event",
+            CodexMessageRole.Assistant => "最终助手回复",
+            CodexMessageRole.Mcp => "MCP 事件",
             CodexMessageRole.Memory => "ReactiveMemory",
-            CodexMessageRole.Skill => "Skill event",
+            CodexMessageRole.Skill => "技能事件",
             CodexMessageRole.Error => "Error",
             CodexMessageRole.System => "System",
-            _ => "Agent event",
+            _ => "智能体事件",
         };
     }
 
@@ -290,14 +290,14 @@ public sealed partial class VSCodexToolWindowViewModel
             new RateLimitWindowStatus
             {
                 Label = "5h",
-                Remaining = "Waiting for Codex telemetry",
+                Remaining = "等待 Codex 遥测数据",
                 UsagePercent = 0,
                 ResetText = string.Empty
             },
             new RateLimitWindowStatus
             {
                 Label = WeeklyText,
-                Remaining = "Waiting for Codex telemetry",
+                Remaining = "等待 Codex 遥测数据",
                 UsagePercent = 0,
                 ResetText = string.Empty
             }

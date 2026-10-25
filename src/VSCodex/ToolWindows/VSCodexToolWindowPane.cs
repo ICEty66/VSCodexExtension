@@ -68,7 +68,7 @@ public sealed class VSCodexToolWindowPane : ToolWindowPane
         }
 
         ViewModel.Prompt = prompt;
-        ViewModel.Status = "Prepared VSCodex assistant prompt";
+        ViewModel.Status = "已准备 VSCodex 助手提示词";
     }
 
     /// <summary>Performs the show History operation.</summary>

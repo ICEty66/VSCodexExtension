@@ -28,7 +28,7 @@ public sealed class RunFailureMessageFormatterTests
     [Arguments("Error: {not JSON}\n at transport", "Error: {not JSON}")]
     [Arguments("{\"error\":\"unavailable\"}", "{\"error\":\"unavailable\"}")]
     [Arguments("{\"message\":\"Rate limit reached\"}", "Rate limit reached")]
-    [Arguments("   ", "Codex could not finish this request.")]
+    [Arguments("   ", "Codex 未能完成此请求。")]
     public async Task Plain_text_and_malformed_responses_are_safe(string message, string expected)
     {
         await Assert.That(RunFailureMessageFormatter.Format(new InvalidOperationException(message))).IsEqualTo(expected);

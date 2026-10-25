@@ -43,14 +43,14 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (IsRunning)
         {
-            Status = "VSCodex history is locked while a task is running";
+            Status = "任务运行期间 VSCodex 历史被锁定";
             return;
         }
 
         RefreshHistory();
         IsToolPanelOpen = true;
         SelectedToolTabIndex = 0;
-        Status = "VSCodex history";
+        Status = "VSCodex 历史";
     }
 
     /// <summary>Performs the attach Files operation.</summary>
@@ -120,7 +120,7 @@ public sealed partial class VSCodexToolWindowViewModel
             Path = path,
             Kind = "image"
         });
-        Status = "Attached clipboard image";
+        Status = "已附加剪贴板图片";
     }
 
     /// <summary>Performs the insert Prompt Suggestion operation.</summary>

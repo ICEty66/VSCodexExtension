@@ -78,7 +78,7 @@ public sealed partial class VSCodexToolWindowViewModel
             suggestions = activeToken.StartsWith("#", StringComparison.Ordinal)
                 ? ContextSuggestions.Select((x) => new PromptSuggestionItem
                 {
-                    Kind = x.ReferenceKind == "selection" ? "Selected code" : "Reference",
+                    Kind = x.ReferenceKind == "selection" ? "选中代码" : "Reference",
                     DisplayText = x.ReferenceKey,
                     Detail = x.ReferenceKind == "selection" ? $"{x.RelativePath} lines {x.StartLine}-{x.EndLine}" : x.RelativePath,
                     InsertText = $"{x.ReferenceKey} "
@@ -98,8 +98,8 @@ public sealed partial class VSCodexToolWindowViewModel
             PromptSuggestionItem browseSuggestion = new PromptSuggestionItem
             {
                 Kind = "Disk",
-                DisplayText = "Browse files...",
-                Detail = "Choose one or more files from the repository or elsewhere on disk",
+                DisplayText = "浏览文件……",
+                Detail = "从仓库或磁盘其他位置选择一个或多个文件",
                 TargetTab = "browse-files"
             };
             suggestions = fileSuggestions.Count == 0
@@ -139,22 +139,22 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         return
         [
-            new() { Kind = ActionText, DisplayText = "/explain", Detail = "Explain selected code or active editor context", InsertText = "/explain " },
-            new() { Kind = ActionText, DisplayText = "/fix", Detail = "Fix selected code with the smallest safe change", InsertText = "/fix " },
-            new() { Kind = ActionText, DisplayText = "/review", Detail = "Review selected code for bugs and risks", InsertText = "/review " },
-            new() { Kind = ActionText, DisplayText = "/optimize", Detail = "Optimize selected code without changing behavior", InsertText = "/optimize " },
-            new() { Kind = ActionText, DisplayText = "/docs", Detail = "Generate or improve comments and documentation", InsertText = "/docs " },
-            new() { Kind = ActionText, DisplayText = "/test", Detail = "Create focused tests for selected code", InsertText = "/test " },
-            new() { Kind = "Debug", DisplayText = "/debug", Detail = "Debug current exception, break mode, stack, or selected code", InsertText = "/debug " },
-            new() { Kind = "Plan", DisplayText = "/plan", Detail = "Create an agent-oriented implementation plan", InsertText = "/plan " },
-            new() { Kind = "History", DisplayText = "/history", Detail = "Open saved VSCodex conversation history", InsertText = "/history " },
-            new() { Kind = ToolsText, DisplayText = "/mcp", Detail = "Open VSCodex MCP server and tool selection", InsertText = "/mcp " },
-            new() { Kind = "Options", DisplayText = "/settings", Detail = "Use Tools > Options > VSCodex for model, sandbox, and runtime settings", InsertText = "/settings " },
-            new() { Kind = "Context", DisplayText = "/context", Detail = "Open selected-code and repository file context", InsertText = "/context " },
-            new() { Kind = ToolsText, DisplayText = "/memory", Detail = "Open ReactiveMemory controls and saved context", InsertText = "/memory " },
-            new() { Kind = ToolsText, DisplayText = "/agents", Detail = "Open multi-agent roles and orchestration controls", InsertText = "/agents " },
-            new() { Kind = ToolsText, DisplayText = "/skills", Detail = "Open Codex skills controls", InsertText = "/skills " },
-            new() { Kind = "Files", DisplayText = "/attachments", Detail = "Open prompt attachments", InsertText = "/attachments " }
+            new() { Kind = ActionText, DisplayText = "/explain", Detail = "解释选中代码或当前编辑器上下文", InsertText = "/explain " },
+            new() { Kind = ActionText, DisplayText = "/fix", Detail = "以最小的安全改动修复选中代码", InsertText = "/fix " },
+            new() { Kind = ActionText, DisplayText = "/review", Detail = "审阅选中代码中的缺陷与风险", InsertText = "/review " },
+            new() { Kind = ActionText, DisplayText = "/optimize", Detail = "在不改变行为的前提下优化选中代码", InsertText = "/optimize " },
+            new() { Kind = ActionText, DisplayText = "/docs", Detail = "生成或改进注释与文档", InsertText = "/docs " },
+            new() { Kind = ActionText, DisplayText = "/test", Detail = "为选中代码创建聚焦的测试", InsertText = "/test " },
+            new() { Kind = "Debug", DisplayText = "/debug", Detail = "调试当前异常、中断模式、堆栈或选中代码", InsertText = "/debug " },
+            new() { Kind = "Plan", DisplayText = "/plan", Detail = "创建面向智能体的实施计划", InsertText = "/plan " },
+            new() { Kind = "History", DisplayText = "/history", Detail = "打开已保存的 VSCodex 会话历史", InsertText = "/history " },
+            new() { Kind = ToolsText, DisplayText = "/mcp", Detail = "打开 VSCodex MCP 服务器与工具选择", InsertText = "/mcp " },
+            new() { Kind = "Options", DisplayText = "/settings", Detail = "在“工具 > 选项 > VSCodex”中配置模型、沙箱与运行时设置", InsertText = "/settings " },
+            new() { Kind = "Context", DisplayText = "/context", Detail = "打开选中代码与仓库文件上下文", InsertText = "/context " },
+            new() { Kind = ToolsText, DisplayText = "/memory", Detail = "打开 ReactiveMemory 控件与已保存的上下文", InsertText = "/memory " },
+            new() { Kind = ToolsText, DisplayText = "/agents", Detail = "打开多智能体角色与编排控件", InsertText = "/agents " },
+            new() { Kind = ToolsText, DisplayText = "/skills", Detail = "打开 Codex 技能控件", InsertText = "/skills " },
+            new() { Kind = "Files", DisplayText = "/attachments", Detail = "打开提示词附件", InsertText = "/attachments " }
         ];
     }
 
@@ -216,7 +216,7 @@ public sealed partial class VSCodexToolWindowViewModel
             catch (Exception ex2)
             {
                 await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-                Status = $"Could not save VSCodex settings: {ex2.Message}";
+                Status = $"无法保存 VSCodex 设置：{ex2.Message}";
             }
             finally
             {
@@ -339,7 +339,7 @@ public sealed partial class VSCodexToolWindowViewModel
             BudgetDrivenModelSelection = false;
         }
 
-        Status = $"Applied model recommendation: {recommended}";
+        Status = $"已应用模型建议：{recommended}";
     }
 
     /// <summary>Updates analytics.</summary>

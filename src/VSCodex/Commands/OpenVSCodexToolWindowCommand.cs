@@ -202,7 +202,7 @@ internal sealed class OpenVSCodexToolWindowCommand
     private void ExecuteCreatePlan(object sender, EventArgs e)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
-        ShowPromptFromContext(x => x.BuildPlanPrompt("Create a plan for the current selected coding task.", string.Empty));
+        ShowPromptFromContext(x => x.BuildPlanPrompt("为当前选中的编码任务制定一个计划。", string.Empty));
     }
 
     /// <summary>Executes configure Memory.</summary>
@@ -286,7 +286,7 @@ internal sealed class OpenVSCodexToolWindowCommand
         var inBreakMode = IsDebuggerInBreakMode();
         command.Visible = true;
         command.Enabled = HasActiveDocument() || inBreakMode;
-        command.Text = inBreakMode ? "Debug Exception with VSCodex" : "Debug With VSCodex";
+        command.Text = inBreakMode ? "使用 VSCodex 调试异常" : "使用 VSCodex 调试";
     }
 
     /// <summary>Performs the query Active Exception Command Status operation.</summary>
@@ -302,7 +302,7 @@ internal sealed class OpenVSCodexToolWindowCommand
 
         command.Visible = true;
         command.Enabled = HasActiveDocument() || IsDebuggerInBreakMode();
-        command.Text = "Fix Active Exception with VSCodex";
+        command.Text = "使用 VSCodex 修复活动异常";
     }
 
     /// <summary>Performs the query Active Error Command Status operation.</summary>
@@ -318,7 +318,7 @@ internal sealed class OpenVSCodexToolWindowCommand
 
         command.Visible = true;
         command.Enabled = true;
-        command.Text = "Fix with VSCodex";
+        command.Text = "使用 VSCodex 修复";
     }
 
     /// <summary>Performs the query Test Failure Command Status operation.</summary>
@@ -334,7 +334,7 @@ internal sealed class OpenVSCodexToolWindowCommand
 
         command.Visible = true;
         command.Enabled = HasActiveDocument();
-        command.Text = "Fix Test Failure with VSCodex";
+        command.Text = "使用 VSCodex 修复测试失败";
     }
 
     /// <summary>Determines whether has Active Document.</summary>
@@ -404,7 +404,7 @@ internal sealed class OpenVSCodexToolWindowCommand
                 _ = ActivityLog.TryLogError(nameof(OpenVSCodexToolWindowCommand), ex.ToString());
                 _ = VsShellUtilities.ShowMessageBox(
                     _package,
-                    $"VSCodex could not complete the command. Check the Visual Studio ActivityLog for details.\r\n\r\n{ex.Message}",
+                    $"VSCodex 无法完成该命令。详情请查看 Visual Studio 活动日志。\r\n\r\n{ex.Message}",
                     "VSCodex",
                     OLEMSGICON.OLEMSGICON_WARNING,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
@@ -422,7 +422,7 @@ internal sealed class OpenVSCodexToolWindowCommand
         var window = await _package.ShowToolWindowAsync(typeof(VSCodexToolWindowPane), 0, true, _package.DisposalToken).ConfigureAwait(true) as VSCodexToolWindowPane;
         if (window is null || window.Frame is null)
         {
-            throw new NotSupportedException("Cannot create VSCodex tool window.");
+            throw new NotSupportedException("无法创建 VSCodex 工具窗口。");
         }
 
         configure?.Invoke(window);

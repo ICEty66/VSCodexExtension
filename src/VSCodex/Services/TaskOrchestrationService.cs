@@ -71,7 +71,7 @@ public sealed class TaskOrchestrationService(ISettingsStore settings, ICodexOrch
         var token = _cancellation.Token;
         var plan = BuildPlan(request);
         CurrentPlan = plan;
-        Emit("plan-created", $"Created orchestration plan with {plan.Sections.Count} section(s) and {plan.Agents.Count} agent(s).", plan);
+        Emit("plan-created", $"已创建编排计划，包含 {plan.Sections.Count} 个分段与 {plan.Agents.Count} 个智能体。", plan);
 
         var results = new List<OrchestrationTaskSection>();
         try
@@ -92,7 +92,7 @@ public sealed class TaskOrchestrationService(ISettingsStore settings, ICodexOrch
             }
 
             var final = await RunFinalSynthesisAsync(request, results).ConfigureAwait(false);
-            Emit("plan-completed", "Multi-agent orchestration completed.", plan);
+            Emit("plan-completed", "多智能体编排已完成。", plan);
             return final;
         }
         catch (OperationCanceledException)
@@ -102,7 +102,7 @@ public sealed class TaskOrchestrationService(ISettingsStore settings, ICodexOrch
                 section.Status = OrchestrationSectionStatus.Cancelled;
             }
 
-            Emit("plan-cancelled", "Multi-agent orchestration cancelled.", plan);
+            Emit("plan-cancelled", "多智能体编排已取消。", plan);
             return new CodexRunResult { FinalResponse = RenderPlanSummary(plan), UsedFallback = false };
         }
         catch (Exception ex)
@@ -150,7 +150,7 @@ public sealed class TaskOrchestrationService(ISettingsStore settings, ICodexOrch
             sections.Add(new OrchestrationTaskSection
             {
                 Index = 1,
-                Title = "Handle request",
+                Title = "处理请求",
                 Description = request.Prompt,
                 AssignedAgent = PickAgent(agents, BuilderText, 0).Name
             });
@@ -182,11 +182,11 @@ public sealed class TaskOrchestrationService(ISettingsStore settings, ICodexOrch
         if (candidates.Count < 2 && LooksLikeLargeTask(normalized))
         {
             candidates = [
-                "Analyze requirements, repository context, risks, and acceptance criteria.",
-                "Design the implementation approach and identify files/services/UI surfaces to change.",
-                "Implement the requested capability in focused sections.",
-                "Review the implementation for correctness, safety, and integration issues.",
-                "Define and run the most relevant validation checks, then summarize evidence."
+                "分析需求、仓库上下文、风险与验收标准。",
+                "设计实现方案，并确定需要改动的文件、服务与界面。",
+                "分区块实现所需能力。",
+                "审阅实现的正确性、安全性与集成问题。",
+                "确定并执行最相关的验证检查，然后汇总证据。"
             ];
         }
 

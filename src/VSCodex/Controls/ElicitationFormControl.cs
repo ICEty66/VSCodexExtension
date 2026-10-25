@@ -95,9 +95,9 @@ public sealed class ElicitationFormControl : StackPanel
             return;
         }
 
-        var includeEmpty = new CheckBox { Content = new TextBlock { Text = "Send an empty string instead of omitting this field", TextWrapping = TextWrapping.Wrap } };
+        var includeEmpty = new CheckBox { Content = new TextBlock { Text = "改为发送空字符串，而不是省略该字段", TextWrapping = TextWrapping.Wrap } };
         _ = includeEmpty.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(ElicitationField.IncludeEmptyValue)) { Source = field, Mode = BindingMode.TwoWay });
-        System.Windows.Automation.AutomationProperties.SetName(includeEmpty, $"Include an empty value for {field.Name}");
+        System.Windows.Automation.AutomationProperties.SetName(includeEmpty, $"为 {field.Name} 提供一个空值");
         _ = panel.Children.Add(includeEmpty);
     }
 }

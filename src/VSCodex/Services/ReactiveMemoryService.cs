@@ -35,7 +35,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
     private const string SearchTool = "reactivememory_search";
 
     /// <summary>The message returned when the required server is unavailable.</summary>
-    private const string ServerUnavailable = "ReactiveMemory MCP server is not enabled in Codex config.";
+    private const string ServerUnavailable = "Codex 配置中未启用 ReactiveMemory MCP 服务器。";
 
     /// <summary>The number of minutes before a workspace may be scanned again.</summary>
     private const int ScanCooldownMinutes = 30;
@@ -117,13 +117,13 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         if (!MemoryUtilities.HasWorkspaceRoot(identity))
         {
             return MemoryUtilities.Unavailable(
-                "ReactiveMemory ProjectMiner scan skipped because the Visual Studio workspace root is unavailable.");
+                "由于 Visual Studio 工作区根目录不可用，已跳过 ReactiveMemory ProjectMiner 扫描。");
         }
 
         string key = MemoryUtilities.GetScanKey(identity, automatic);
         if (!CanScan(key))
         {
-            return MemoryUtilities.Success("ReactiveMemory ProjectMiner scan already ran for this workspace.");
+            return MemoryUtilities.Success("该工作区已执行过 ReactiveMemory ProjectMiner 扫描。");
         }
 
         McpServerDefinition? server = FindServer();
@@ -141,15 +141,15 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         catch (OperationCanceledException)
         {
             return MemoryUtilities.Unavailable(
-                "ReactiveMemory ProjectMiner scan was cancelled by the host; continuing without blocking VSCodex.");
+                "ReactiveMemory ProjectMiner 扫描被宿主取消；继续执行，不阻塞 VSCodex。");
         }
         catch (IOException exception)
         {
-            return MemoryUtilities.Unavailable($"ReactiveMemory ProjectMiner scan failed: {exception.Message}");
+            return MemoryUtilities.Unavailable($"ReactiveMemory ProjectMiner 扫描失败：{exception.Message}");
         }
         catch (InvalidOperationException exception)
         {
-            return MemoryUtilities.Unavailable($"ReactiveMemory ProjectMiner scan failed: {exception.Message}");
+            return MemoryUtilities.Unavailable($"ReactiveMemory ProjectMiner 扫描失败：{exception.Message}");
         }
     }
 
@@ -167,7 +167,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return MemoryUtilities.Cancelled(checkpoint, "Pause checkpoint save was cancelled.");
+            return MemoryUtilities.Cancelled(checkpoint, "暂停检查点保存已取消。");
         }
 
         checkpoint.State = PauseCheckpointState.Pending;
@@ -183,18 +183,18 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             JObject result = await InvokeCheckpointSaveAsync(server, checkpoint, cancellationToken).ConfigureAwait(false);
             checkpoint.MemoryDrawerId = MemoryUtilities.FindString(result, "drawerId");
             checkpoint.State = PauseCheckpointState.Saved;
-            return MemoryUtilities.CreateCheckpointResult(true, "Pause checkpoint saved.", checkpoint, result);
+            return MemoryUtilities.CreateCheckpointResult(true, "暂停检查点已保存。", checkpoint, result);
         }
         catch (OperationCanceledException)
         {
-            return MemoryUtilities.Cancelled(checkpoint, "Pause checkpoint save was cancelled.");
+            return MemoryUtilities.Cancelled(checkpoint, "暂停检查点保存已取消。");
         }
         catch (InvalidOperationException exception)
         {
             checkpoint.State = PauseCheckpointState.Failed;
             return MemoryUtilities.Failure(
                 "save_failed",
-                $"ReactiveMemory could not save the pause checkpoint: {exception.Message}",
+                $"ReactiveMemory 无法保存暂停检查点：{exception.Message}",
                 checkpoint);
         }
     }
@@ -210,7 +210,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
 
         if (cancellationToken.IsCancellationRequested)
         {
-            return MemoryUtilities.Cancelled(null, "Pause checkpoint restore was cancelled.");
+            return MemoryUtilities.Cancelled(null, "暂停检查点还原已取消。");
         }
 
         McpServerDefinition? server = FindServer();
@@ -227,13 +227,13 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         }
         catch (OperationCanceledException)
         {
-            return MemoryUtilities.Cancelled(null, "Pause checkpoint restore was cancelled.");
+            return MemoryUtilities.Cancelled(null, "暂停检查点还原已取消。");
         }
         catch (InvalidOperationException exception)
         {
             return MemoryUtilities.Failure(
                 "restore_failed",
-                $"ReactiveMemory could not restore the pause checkpoint: {exception.Message}",
+                $"ReactiveMemory 无法还原暂停检查点：{exception.Message}",
                 null);
         }
     }
@@ -304,7 +304,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             : new ReactiveMemoryCallResult
             {
                 Success = true,
-                Message = $"ReactiveMemory saved explicit memory through {tool.Name}",
+                Message = $"ReactiveMemory 已通过 {tool.Name} 保存显式记忆",
                 ContextText = MemoryUtilities.ExtractText(result),
                 RawResult = result,
             };
@@ -357,8 +357,8 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             .InvokeToolAsync(server, tool.Name, MemoryUtilities.CreateProjectArguments(identity))
             .ConfigureAwait(false);
         return result is null
-            ? MemoryUtilities.Unavailable("ReactiveMemory ProjectMiner returned no result.")
-            : MemoryUtilities.Success($"ReactiveMemory ProjectMiner scanned {identity.RootPath}", result);
+            ? MemoryUtilities.Unavailable("ReactiveMemory ProjectMiner 未返回结果。")
+            : MemoryUtilities.Success($"ReactiveMemory ProjectMiner 已扫描 {identity.RootPath}", result);
     }
 
     /// <summary>Files bounded safe workspace chunks when a native project miner is unavailable.</summary>
@@ -377,7 +377,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         if (invocations.Count == 0)
         {
             RememberScan(key);
-            return MemoryUtilities.Success("ReactiveMemory ProjectMiner scan found no safe text files to mine.");
+            return MemoryUtilities.Success("ReactiveMemory ProjectMiner 扫描未找到可安全挖掘的文本文件。");
         }
 
         TimeSpan timeout = automatic
@@ -389,7 +389,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         return new ReactiveMemoryCallResult
         {
             Success = completed > 0,
-            Message = $"ReactiveMemory ProjectMiner-compatible scan filed {completed} chunk(s) from {identity.RootPath}.",
+            Message = $"ReactiveMemory ProjectMiner 兼容扫描已从 {identity.RootPath} 归档 {completed} 个分块。",
             RawResult = new JObject
             {
                 ["requested"] = invocations.Count,
@@ -411,7 +411,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             .InvokeToolAsync(server, toolName, MemoryUtilities.CreateCheckpointArguments(checkpoint))
             .WithCancellation(cancellationToken)
             .ConfigureAwait(false);
-        return result ?? throw new InvalidOperationException("ReactiveMemory returned no result while saving the pause checkpoint.");
+        return result ?? throw new InvalidOperationException("保存暂停检查点时 ReactiveMemory 未返回结果。");
     }
 
     /// <summary>Restores a pause checkpoint through the best available retrieval tool.</summary>
@@ -429,7 +429,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             .InvokeToolAsync(server, toolName, MemoryUtilities.CreateRestoreArguments(query))
             .WithCancellation(cancellationToken)
             .ConfigureAwait(false);
-        return result ?? throw new InvalidOperationException("ReactiveMemory returned no result while restoring the pause checkpoint.");
+        return result ?? throw new InvalidOperationException("还原暂停检查点时 ReactiveMemory 未返回结果。");
     }
 
     /// <summary>Invokes the first available tool from an ordered set of aliases.</summary>
@@ -457,11 +457,11 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
 
             JObject? result = await _mcpTools.InvokeToolAsync(server, toolName, arguments).ConfigureAwait(false);
             return result is null
-                ? MemoryUtilities.Unavailable($"ReactiveMemory returned no result through {toolName}.")
+                ? MemoryUtilities.Unavailable($"ReactiveMemory 通过 {toolName} 未返回结果。")
                 : new ReactiveMemoryCallResult
                 {
                     Success = true,
-                    Message = $"ReactiveMemory updated through {toolName}",
+                    Message = $"ReactiveMemory 已通过 {toolName} 更新",
                     ContextText = MemoryUtilities.ExtractText(result),
                     RawResult = result,
                 };
@@ -469,11 +469,11 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         catch (OperationCanceledException)
         {
             return MemoryUtilities.Unavailable(
-                "ReactiveMemory MCP call was cancelled by the host; continuing without blocking VSCodex.");
+                "ReactiveMemory 的 MCP 调用被宿主取消；继续执行，不阻塞 VSCodex。");
         }
         catch (InvalidOperationException exception)
         {
-            return MemoryUtilities.Unavailable($"ReactiveMemory unavailable: {exception.Message}");
+            return MemoryUtilities.Unavailable($"ReactiveMemory 不可用：{exception.Message}");
         }
     }
 
@@ -636,7 +636,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             arguments["drawer"] = scope ?? string.Empty;
             arguments[nameof(scope)] = scope ?? string.Empty;
             arguments[ContentArgument] = text ?? string.Empty;
-            arguments[SourceFileArgument] = "VSCodex explicit memory";
+            arguments[SourceFileArgument] = "VSCodex 显式记忆";
             arguments[AddedByArgument] = AgentName;
             arguments["entry"] =
                 $"Workspace identity: {identity?.Id ?? string.Empty}{Environment.NewLine}"
@@ -668,7 +668,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             new()
             {
                 [AgentNameArgument] = AgentName,
-                [TopicArgument] = $"Paused Codex turn {checkpoint.OperationId}",
+                [TopicArgument] = $"已暂停的 Codex 回合 {checkpoint.OperationId}",
                 [SectorArgument] = CheckpointSector(checkpoint.WorkspaceName),
                 [VaultArgument] = "pause-checkpoints",
                 ["drawer"] = checkpoint.CheckpointId,
@@ -678,7 +678,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
                     ["schema"] = "vscodex.pause-checkpoint/1",
                     [CheckpointArgument] = JObject.FromObject(checkpoint),
                 }.ToString(Formatting.None),
-                [SourceFileArgument] = "VSCodex pause checkpoint",
+                [SourceFileArgument] = "VSCodex 暂停检查点",
                 [AddedByArgument] = AgentName,
                 [WorkspaceIdentityArgument] = checkpoint.WorkspaceIdentityId,
                 [WorkspaceRootArgument] = checkpoint.WorkspaceRoot,
@@ -821,7 +821,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             {
                 return CreateCheckpointResult(
                     false,
-                    "ReactiveMemory did not return a complete VSCodex pause checkpoint.",
+                    "ReactiveMemory 未返回完整的 VSCodex 暂停检查点。",
                     null,
                     result,
                     "checkpoint_not_found");
@@ -832,7 +832,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             {
                 return CreateCheckpointResult(
                     false,
-                    $"ReactiveMemory returned a pause checkpoint for a different {mismatch}.",
+                    $"ReactiveMemory 返回的暂停检查点属于另一个 {mismatch}。",
                     checkpoint,
                     result,
                     "correlation_mismatch");
@@ -842,7 +842,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
                 ? query.MemoryDrawerId
                 : checkpoint.MemoryDrawerId;
             checkpoint.State = PauseCheckpointState.Restored;
-            return CreateCheckpointResult(true, "Pause checkpoint restored.", checkpoint, result);
+            return CreateCheckpointResult(true, "暂停检查点已还原。", checkpoint, result);
         }
 
         /// <summary>Selects the best available tool for the supplied checkpoint query.</summary>
@@ -864,26 +864,26 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         {
             if (checkpoint is null)
             {
-                return "A pause checkpoint is required.";
+                return "需要提供暂停检查点。";
             }
 
             if (string.IsNullOrWhiteSpace(checkpoint.CheckpointId))
             {
-                return "A pause checkpoint ID is required.";
+                return "需要提供暂停检查点 ID。";
             }
 
             if (string.IsNullOrWhiteSpace(checkpoint.WorkspaceIdentityId) && string.IsNullOrWhiteSpace(checkpoint.WorkspaceRoot))
             {
-                return "A workspace identity or workspace root is required for a pause checkpoint.";
+                return "暂停检查点需要工作区标识或工作区根目录。";
             }
 
             if (string.IsNullOrWhiteSpace(checkpoint.ChatId) && string.IsNullOrWhiteSpace(checkpoint.ThreadId))
             {
-                return "A chat ID or Codex thread ID is required for a pause checkpoint.";
+                return "暂停检查点需要聊天 ID 或 Codex 线程 ID。";
             }
 
             return string.IsNullOrWhiteSpace(checkpoint.TurnId) && string.IsNullOrWhiteSpace(checkpoint.OperationId)
-                ? "A turn ID or operation ID is required for a pause checkpoint."
+                ? "暂停检查点需要回合 ID 或操作 ID。"
                 : string.Empty;
         }
 
@@ -894,17 +894,17 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         {
             if (query is null)
             {
-                return "A pause checkpoint query is required.";
+                return "需要提供暂停检查点查询。";
             }
 
             if (string.IsNullOrWhiteSpace(query.CheckpointId) && string.IsNullOrWhiteSpace(query.MemoryDrawerId))
             {
-                return "A pause checkpoint ID or ReactiveMemory drawer ID is required.";
+                return "需要提供暂停检查点 ID 或 ReactiveMemory 抽屉 ID。";
             }
 
             if (string.IsNullOrWhiteSpace(query.WorkspaceIdentityId) && string.IsNullOrWhiteSpace(query.WorkspaceRoot))
             {
-                return "A workspace identity or workspace root is required to restore a pause checkpoint.";
+                return "还原暂停检查点需要工作区标识或工作区根目录。";
             }
 
             bool hasNoCorrelation =
@@ -913,7 +913,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
                 && string.IsNullOrWhiteSpace(query.TurnId)
                 && string.IsNullOrWhiteSpace(query.OperationId);
             return hasNoCorrelation
-                ? "At least one chat, thread, turn, or operation correlation ID is required to restore a pause checkpoint."
+                ? "还原暂停检查点至少需要一个聊天、线程、回合或操作关联 ID。"
                 : string.Empty;
         }
 
@@ -1044,8 +1044,8 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
             ReactiveMemoryPauseCheckpoint checkpoint,
             ReactiveMemoryPauseCheckpointQuery query) =>
             FirstMismatch(
-                (checkpoint.CheckpointId, query.CheckpointId, "checkpoint ID"),
-                (checkpoint.WorkspaceIdentityId, query.WorkspaceIdentityId, "workspace identity"),
+                (checkpoint.CheckpointId, query.CheckpointId, "检查点 ID"),
+                (checkpoint.WorkspaceIdentityId, query.WorkspaceIdentityId, "工作区标识"),
                 (checkpoint.ChatId, query.ChatId, "chat"),
                 (checkpoint.ThreadId, query.ThreadId, "thread"),
                 (checkpoint.TurnId, query.TurnId, "turn"),
@@ -1083,7 +1083,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         /// <param name="identity">The workspace identity.</param>
         /// <returns>The workspace sector.</returns>
         internal static string Sector(WorkspaceIdentity? identity) =>
-            string.IsNullOrWhiteSpace(identity?.Name) ? "VSCodex workspace" : identity?.Name ?? string.Empty;
+            string.IsNullOrWhiteSpace(identity?.Name) ? "VSCodex 工作区" : identity?.Name ?? string.Empty;
 
         /// <summary>Returns the workspace-specific ReactiveMemory vault.</summary>
         /// <param name="identity">The workspace identity.</param>
@@ -1097,7 +1097,7 @@ public sealed class ReactiveMemoryService(IMcpConfigService mcpConfig, IMcpToolC
         /// <param name="workspaceName">The workspace display name.</param>
         /// <returns>The checkpoint sector.</returns>
         internal static string CheckpointSector(string workspaceName) =>
-            string.IsNullOrWhiteSpace(workspaceName) ? "VSCodex workspace" : workspaceName;
+            string.IsNullOrWhiteSpace(workspaceName) ? "VSCodex 工作区" : workspaceName;
 
         /// <summary>Classifies a mined file into a stable memory vault.</summary>
         /// <param name="file">The mined file path.</param>

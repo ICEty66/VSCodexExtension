@@ -34,7 +34,7 @@ public sealed class VoiceInputService : IVoiceInputService
     private readonly Subject<string> _transcript = new();
 
     /// <summary>Stores the status.</summary>
-    private readonly BehaviorSubject<string> _status = new("Voice input ready");
+    private readonly BehaviorSubject<string> _status = new("语音输入已就绪");
 
     /// <summary>Stores the recognizer.</summary>
     private SpeechRecognitionEngine? _recognizer;
@@ -91,13 +91,13 @@ public sealed class VoiceInputService : IVoiceInputService
         {
             if (_disposed)
             {
-                SafeStatus("Voice input is disposed");
+                SafeStatus("语音输入已释放");
                 return;
             }
 
             if (!_isAvailable)
             {
-                SafeStatus("Voice input is not available on this Windows installation");
+                SafeStatus("此 Windows 安装上不支持语音输入");
                 return;
             }
 
@@ -110,11 +110,11 @@ public sealed class VoiceInputService : IVoiceInputService
             _startRequested = true;
             if (_startTask?.IsCompleted == false)
             {
-                SafeStatus("Voice input is starting");
+                SafeStatus("语音输入正在启动");
                 return;
             }
 
-            SafeStatus("Starting voice input");
+            SafeStatus("正在启动语音输入");
             _startTask = Task.Run(StartListeningCore);
         }
     }
@@ -141,12 +141,12 @@ public sealed class VoiceInputService : IVoiceInputService
             catch (Exception ex) when (IsSpeechInfrastructureException(ex))
             {
                 ReleaseRecognizer(recognizer);
-                SafeStatus($"Voice input stopped after recognizer error: {ex.Message}");
+                SafeStatus($"识别器出错后语音输入已停止：{ex.Message}");
                 return;
             }
         }
 
-        SafeStatus("Voice input stopped");
+        SafeStatus("语音输入已停止");
     }
 
     /// <summary>Performs the dispose operation.</summary>
@@ -215,7 +215,7 @@ public sealed class VoiceInputService : IVoiceInputService
             }
 
             ReleaseRecognizer(recognizer);
-            SafeStatus($"Voice input unavailable: {ex.Message}");
+            SafeStatus($"语音输入不可用：{ex.Message}");
         }
         catch (Exception ex)
         {
@@ -225,7 +225,7 @@ public sealed class VoiceInputService : IVoiceInputService
                 _startRequested = false;
             }
 
-            SafeStatus($"Voice input failed to start: {ex.Message}");
+            SafeStatus($"语音输入启动失败：{ex.Message}");
         }
     }
 
@@ -263,7 +263,7 @@ public sealed class VoiceInputService : IVoiceInputService
             .FirstOrDefault(x => Equals(x.Culture, CultureInfo.CurrentUICulture))
             ?? recognizers
                 .FirstOrDefault(x => string.Equals(x.Culture.TwoLetterISOLanguageName, CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, StringComparison.OrdinalIgnoreCase))
-            ?? recognizers.FirstOrDefault() ?? throw new InvalidOperationException("No Windows speech recognizer is installed.");
+            ?? recognizers.FirstOrDefault() ?? throw new InvalidOperationException("未安装 Windows 语音识别器。");
 
         var recognizer = new SpeechRecognitionEngine(recognizerInfo);
         recognizer.InitialSilenceTimeout = TimeSpan.FromSeconds(Numeric10);
@@ -289,7 +289,7 @@ public sealed class VoiceInputService : IVoiceInputService
             return;
         }
 
-        SafeStatus("Voice input detected speech");
+        SafeStatus("语音输入检测到语音");
     }
 
     /// <summary>Handles the recognize Completed event.</summary>
@@ -306,7 +306,7 @@ public sealed class VoiceInputService : IVoiceInputService
             }
         }
 
-        SafeStatus(e.Error is null ? "Voice input stopped" : $"Voice input stopped: {e.Error.Message}");
+        SafeStatus(e.Error is null ? "语音输入已停止" : $"语音输入已停止：{e.Error.Message}");
     }
 
     /// <summary>Handles the speech Recognized event.</summary>
@@ -319,7 +319,7 @@ public sealed class VoiceInputService : IVoiceInputService
         {
             if (IsListening)
             {
-                SafeStatus("Voice input heard speech but no transcript was available");
+                SafeStatus("语音输入听到语音，但没有可用的转写文本");
             }
 
             return;
@@ -328,8 +328,8 @@ public sealed class VoiceInputService : IVoiceInputService
         var text = result.Text.Trim();
         SafeTranscript(text);
         SafeStatus(result.Confidence < Numeric0Point35F
-            ? $"Voice input captured a low-confidence transcript; review it: {text}"
-            : $"Voice input captured: {text}");
+            ? $"语音输入捕获到低置信度转写，请核对：{text}"
+            : $"语音输入已捕获：{text}");
     }
 
     /// <summary>Handles the speech Recognition Rejected event.</summary>
@@ -342,7 +342,7 @@ public sealed class VoiceInputService : IVoiceInputService
             return;
         }
 
-        SafeStatus("Voice input heard speech but could not recognize it");
+        SafeStatus("语音输入听到语音但无法识别");
     }
 
     /// <summary>Performs the release Recognizer operation.</summary>

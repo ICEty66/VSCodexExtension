@@ -77,19 +77,19 @@ public sealed class SolutionLoadMonitorService(
         _solution = await _package.GetServiceAsync(typeof(SVsSolution)).ConfigureAwait(true) as IVsSolution;
         if (_solution is null)
         {
-            _ = ActivityLog.TryLogWarning(nameof(SolutionLoadMonitorService), "ReactiveMemory ProjectMiner monitor could not get SVsSolution.");
+            _ = ActivityLog.TryLogWarning(nameof(SolutionLoadMonitorService), "ReactiveMemory ProjectMiner 监视器无法获取 SVsSolution。");
             return;
         }
 
         SubscribeToSolutionEvents();
-        _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), "ReactiveMemory ProjectMiner monitor registered for Visual Studio solution events.");
+        _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), "ReactiveMemory ProjectMiner 监视器已注册 Visual Studio 解决方案事件。");
         var solutionPath = TryGetSolutionPath();
         if (string.IsNullOrWhiteSpace(solutionPath))
         {
             return;
         }
 
-        QueueProjectMinerScan("package startup idle check", solutionPath, AutomaticScanDelay);
+        QueueProjectMinerScan("包启动空闲检查", solutionPath, AutomaticScanDelay);
     }
 
     /// <summary>Performs the dispose operation.</summary>
@@ -114,7 +114,7 @@ public sealed class SolutionLoadMonitorService(
     {
         ThreadHelper.ThrowIfNotOnUIThread();
         _scanRetryCount = 0;
-        QueueProjectMinerScan("solution opened", TryGetSolutionPath(), AutomaticScanDelay);
+        QueueProjectMinerScan("解决方案已打开", TryGetSolutionPath(), AutomaticScanDelay);
     }
 
     /// <summary>Handles a solution closing or closed event.</summary>
@@ -149,11 +149,11 @@ public sealed class SolutionLoadMonitorService(
     {
         if (string.IsNullOrWhiteSpace(solutionPath))
         {
-            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner scan skipped because no solution path was available ({reason}).");
+            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"由于没有可用的解决方案路径，已跳过 ReactiveMemory ProjectMiner 扫描（{reason}）。");
             return;
         }
 
-        _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner scan queued ({reason}).");
+        _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner 扫描已排队（{reason}）。");
         TaskObserver.FireAndForget(Task.Run(() => RunProjectMinerScanAsync(reason, solutionPath, delay ?? AutomaticScanDelay)));
     }
 
@@ -170,7 +170,7 @@ public sealed class SolutionLoadMonitorService(
             await Task.Delay(delay, _package.DisposalToken).ConfigureAwait(false);
             if (Interlocked.Exchange(ref _scanInProgress, 1) == 1)
             {
-                _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner scan skipped because another scan is already running ({reason}).");
+                _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"由于另一个扫描正在运行，已跳过 ReactiveMemory ProjectMiner 扫描（{reason}）。");
                 return;
             }
 
@@ -179,11 +179,11 @@ public sealed class SolutionLoadMonitorService(
         }
         catch (OperationCanceledException) when (_package.DisposalToken.IsCancellationRequested)
         {
-            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), "ReactiveMemory ProjectMiner scan cancelled during package disposal.");
+            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), "包释放期间 ReactiveMemory ProjectMiner 扫描已取消。");
         }
         catch (Exception ex)
         {
-            _ = ActivityLog.TryLogWarning(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner scan failed: {ex}");
+            _ = ActivityLog.TryLogWarning(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner 扫描失败：{ex}");
         }
         finally
         {
@@ -237,8 +237,8 @@ public sealed class SolutionLoadMonitorService(
         }
 
         _scanRetryCount++;
-        _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner scan is waiting for the Visual Studio workspace identity ({reason}).");
-        QueueProjectMinerScan($"retry {_scanRetryCount} after workspace identity was unavailable for {reason}", solutionPath, RetryDelay);
+        _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"ReactiveMemory ProjectMiner 扫描正在等待 Visual Studio 工作区标识（{reason}）。");
+        QueueProjectMinerScan($"在工作区标识因 {reason} 不可用后重试第 {_scanRetryCount} 次", solutionPath, RetryDelay);
     }
 
     /// <summary>Queues a retry after an unsuccessful scan.</summary>
@@ -277,7 +277,7 @@ public sealed class SolutionLoadMonitorService(
         }
         catch (Exception ex)
         {
-            _ = ActivityLog.TryLogWarning(nameof(SolutionLoadMonitorService), $"Could not capture solution path for ReactiveMemory scan: {ex.Message}");
+            _ = ActivityLog.TryLogWarning(nameof(SolutionLoadMonitorService), $"无法为 ReactiveMemory 扫描获取解决方案路径：{ex.Message}");
         }
 
         return string.Empty;
@@ -310,7 +310,7 @@ public sealed class SolutionLoadMonitorService(
         return new WorkspaceIdentity
         {
             Id = id,
-            Name = string.IsNullOrWhiteSpace(name) ? "VSCodex workspace" : name,
+            Name = string.IsNullOrWhiteSpace(name) ? "VSCodex 工作区" : name,
             RootPath = root,
             SolutionPath = solutionPath,
             SolutionRelativePath = solutionRelativePath,
@@ -361,7 +361,7 @@ public sealed class SolutionLoadMonitorService(
         }
         catch (Exception ex)
         {
-            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"Could not make the solution path relative to the repository root: {ex.Message}");
+            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"无法将解决方案路径转换为相对于仓库根目录的路径：{ex.Message}");
         }
 
         return Path.GetFileName(path);
@@ -414,7 +414,7 @@ public sealed class SolutionLoadMonitorService(
         }
         catch (Exception ex)
         {
-            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"Could not read the Git remote configuration: {ex.Message}");
+            _ = ActivityLog.TryLogInformation(nameof(SolutionLoadMonitorService), $"无法读取 Git 远程配置：{ex.Message}");
         }
 
         return string.Empty;

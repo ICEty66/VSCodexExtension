@@ -66,7 +66,7 @@ public sealed class SessionHistoryItem : ReactiveObject
                 return WorkspaceName;
             }
 
-            return string.IsNullOrWhiteSpace(WorkspaceRoot) ? "Current workspace" : WorkspaceRoot;
+            return string.IsNullOrWhiteSpace(WorkspaceRoot) ? "当前工作区" : WorkspaceRoot;
         }
     }
 

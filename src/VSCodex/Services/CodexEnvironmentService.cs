@@ -29,7 +29,7 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
     private const string VersionText = "--version";
 
     /// <summary>Named string used by this type.</summary>
-    private const string CodexCLIFallbackText = "Codex CLI fallback";
+    private const string CodexCLIFallbackText = "Codex CLI 回退";
 
     /// <summary>Named string used by this type.</summary>
     private const string CodexSDKText = "Codex SDK";
@@ -38,7 +38,7 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
     private const string NpmExecutableName = "npm";
 
     /// <summary>Named string used by this type.</summary>
-    private const string RequiredForThePrimaryVSCodexSDKBridgeText = "Required for the primary VSCodex SDK bridge.";
+    private const string RequiredForThePrimaryVSCodexSDKBridgeText = "主 VSCodex SDK 桥接所必需。";
 
     /// <summary>Named string used by this type.</summary>
     private const string WingetInstallOpenJSNodeJSLTSText = "winget install OpenJS.NodeJS.LTS";
@@ -53,7 +53,7 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
             ResolveNodePath(settings.NodePath),
             VersionText,
             "Node.js",
-            "Required to run the VSCodex SDK bridge.",
+            "运行 VSCodex SDK 桥接所必需。",
             WingetInstallOpenJSNodeJSLTSText).ConfigureAwait(false);
         items.Add(node);
 
@@ -61,26 +61,26 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
             ResolveNpmPath(),
             VersionText,
             NpmExecutableName,
-            "Required to install @openai/codex-sdk on Windows.",
+            "在 Windows 上安装 @openai/codex-sdk 所必需。",
             WingetInstallOpenJSNodeJSLTSText).ConfigureAwait(false);
         items.Add(npm);
 
         var sdk = node.State == PrerequisiteState.Ready
             ? await CheckCodexSdkAsync(settings).ConfigureAwait(false)
-            : Missing(CodexSDKText, RequiredForThePrimaryVSCodexSDKBridgeText, "Install Node.js first, then install @openai/codex-sdk.", "npm install -g @openai/codex-sdk", true);
+            : Missing(CodexSDKText, RequiredForThePrimaryVSCodexSDKBridgeText, "请先安装 Node.js，再安装 @openai/codex-sdk。", "npm install -g @openai/codex-sdk", true);
         items.Add(sdk);
 
         var cli = await CheckExecutableAsync(
             ResolveCodexCliPath(settings.CodexCliPath),
             VersionText,
             CodexCLIFallbackText,
-            "Optional fallback transport used if the SDK bridge cannot complete a request.",
+            "当 SDK 桥接无法完成请求时使用的可选回退传输方式。",
             "npm install -g @openai/codex").ConfigureAwait(false);
         if (cli.State == PrerequisiteState.Missing || cli.State == PrerequisiteState.Error)
         {
             cli.State = PrerequisiteState.Warning;
-            cli.Status = "Optional fallback not found";
-            cli.Details = "The SDK bridge can still run if @openai/codex-sdk is installed. Install the CLI only if you want fallback execution.";
+            cli.Status = "未找到可选回退";
+            cli.Details = "只要已安装 @openai/codex-sdk，SDK 桥接仍可运行。仅在需要回退执行时才需安装 CLI。";
             cli.IsBlocking = false;
         }
 
@@ -106,14 +106,14 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
         var cliPath = string.IsNullOrWhiteSpace(settings.CodexCliPath) ? "codex" : settings.CodexCliPath;
         return string.Join(
             Environment.NewLine,
-            "Windows setup for VSCodex:",
-            "1. Install Node.js LTS: winget install OpenJS.NodeJS.LTS",
-            "2. Restart Visual Studio so node and npm are visible on PATH.",
-            "3. Install the Codex SDK used by the VSCodex bridge: npm install -g @openai/codex-sdk",
-            "4. Optional fallback CLI: npm install -g @openai/codex",
-            "5. Authenticate Codex/OpenAI from PowerShell if required by your account, then reopen VSCodex.",
-            $"Current Node Path: {nodePath}",
-            $"Current Codex CLI Path: {cliPath}");
+            "VSCodex 的 Windows 环境配置：",
+            "1. 安装 Node.js LTS：winget install OpenJS.NodeJS.LTS",
+            "2. 重启 Visual Studio，使 node 与 npm 出现在 PATH 中。",
+            "3. 安装 VSCodex 桥接所需的 Codex SDK：npm install -g @openai/codex-sdk",
+            "4. 可选的回退 CLI：npm install -g @openai/codex",
+            "5. 若你的账户需要，请在 PowerShell 中完成 Codex/OpenAI 认证，然后重新打开 VSCodex。",
+            $"当前 Node 路径：{nodePath}",
+            $"当前 Codex CLI 路径：{cliPath}");
     }
 
     /// <summary>Builds the setup report summary.</summary>
@@ -123,12 +123,12 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
     {
         if (!report.IsSdkReady)
         {
-            return "Codex SDK setup is required before VSCodex can run.";
+            return "VSCodex 运行前需要先完成 Codex SDK 配置。";
         }
 
         return report.IsCliReady
-            ? "Codex SDK and CLI fallback are ready."
-            : "Codex SDK is ready. CLI fallback is optional and not installed.";
+            ? "Codex SDK 与 CLI 回退均已就绪。"
+            : "Codex SDK 已就绪。CLI 回退属可选项，当前未安装。";
     }
 
     /// <summary>Resolves the configured Codex CLI path.</summary>
@@ -201,7 +201,7 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
 
         if (!File.Exists(script))
         {
-            return Missing(CodexSDKText, RequiredForThePrimaryVSCodexSDKBridgeText, $"The bundled codex-bridge.mjs file was not found at {script}.", "Rebuild or reinstall the VSCodex VSIX.", true);
+            return Missing(CodexSDKText, RequiredForThePrimaryVSCodexSDKBridgeText, $"未在 {script} 找到随扩展附带的 codex-bridge.mjs。", "请重新生成或重新安装 VSCodex 扩展。", true);
         }
 
         var result = await RunProcessAsync(ResolveNodePath(settings.NodePath), $"{Quote(script)} --check", LocalPaths.ExtensionInstallRoot, Numeric8000).ConfigureAwait(false);
@@ -244,7 +244,7 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
             Name = name,
             Description = description,
             State = PrerequisiteState.Error,
-            Status = "Found but failed",
+            Status = "已找到但执行失败",
             Details = TrimForUi(result.Error + Environment.NewLine + result.Output),
             InstallCommand = installCommand,
             UpdateCommand = installCommand,
@@ -326,7 +326,7 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
         {
             if (!process.Start())
             {
-                return ProcessResult.NotStarted($"Process did not start: {fileName}");
+                return ProcessResult.NotStarted($"进程未能启动：{fileName}");
             }
         }
         catch (Win32Exception ex)
@@ -352,7 +352,7 @@ public sealed class CodexEnvironmentService : ICodexEnvironmentService
                 _ = ex;
             }
 
-            return new(true, -1, output.ToString(), $"Timed out while checking {fileName}");
+            return new(true, -1, output.ToString(), $"检查 {fileName} 时超时");
         }
 
         process.WaitForExit();

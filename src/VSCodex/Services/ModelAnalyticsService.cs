@@ -71,77 +71,77 @@ public sealed class ModelAnalyticsService : IModelAnalyticsService
             Id = "gpt-6.1-sol", DisplayName = "GPT-6.1 Sol",
             InputPricePerMillion = 2.00D, OutputPricePerMillion = 10.00D,
             ContextWindowTokens = Numeric1050000, BestForComplexity = ModelTaskComplexity.High,
-            IsCodexOptimized = true, Notes = "Standard API token-price estimate; subscription credits and long-context premiums differ."
+            IsCodexOptimized = true, Notes = "按标准 API 的 token 价格估算；订阅额度与长上下文溢价有所不同。"
         },
         new ModelProfile
         {
             Id = "gpt-6-astra", DisplayName = "GPT-6 Astra",
             InputPricePerMillion = 10.00D, OutputPricePerMillion = 50.00D,
             ContextWindowTokens = Numeric1050000, BestForComplexity = ModelTaskComplexity.High,
-            IsCodexOptimized = true, Notes = "Standard API token-price estimate for demanding work; subscription usage differs."
+            IsCodexOptimized = true, Notes = "面向高强度工作的标准 API token 价格估算；订阅用量有所不同。"
         },
         new ModelProfile
         {
             Id = "gpt-6-sol", DisplayName = "GPT-6 Sol",
             InputPricePerMillion = 2.00D, OutputPricePerMillion = 10.00D,
             ContextWindowTokens = Numeric1050000, BestForComplexity = ModelTaskComplexity.High,
-            IsCodexOptimized = true, Notes = "Previous Sol generation; standard API token-price estimate."
+            IsCodexOptimized = true, Notes = "上一代 Sol；按标准 API token 价格估算。"
         },
         new ModelProfile
         {
             Id = "gpt-6-luna", DisplayName = "GPT-6 Luna",
             InputPricePerMillion = 0.10D, OutputPricePerMillion = 0.50D,
             ContextWindowTokens = Numeric1050000, BestForComplexity = ModelTaskComplexity.Low,
-            IsCodexOptimized = true, Notes = "Standard API token-price estimate for focused, repeatable work."
+            IsCodexOptimized = true, Notes = "面向聚焦、可重复工作的标准 API token 价格估算。"
         },
         new ModelProfile
         {
             Id = "gpt-5.6-sol", DisplayName = "GPT-5.6 Sol",
             InputPricePerMillion = 5.00D, OutputPricePerMillion = 30.00D,
             ContextWindowTokens = Numeric1050000, BestForComplexity = ModelTaskComplexity.High,
-            IsCodexOptimized = true, Notes = "Codex Power model for complex, open-ended work."
+            IsCodexOptimized = true, Notes = "面向复杂、开放式工作的 Codex Power 模型。"
         },
         new ModelProfile
         {
             Id = "gpt-5.6-terra", DisplayName = "GPT-5.6 Terra",
             InputPricePerMillion = 2.50D, OutputPricePerMillion = 15.00D,
             ContextWindowTokens = Numeric1050000, BestForComplexity = ModelTaskComplexity.Medium,
-            IsCodexOptimized = true, Notes = "Codex everyday model balancing capability and cost."
+            IsCodexOptimized = true, Notes = "兼顾能力与成本的 Codex 日常模型。"
         },
         new ModelProfile
         {
             Id = "gpt-5.6-luna", DisplayName = "GPT-5.6 Luna",
             InputPricePerMillion = 1.00D, OutputPricePerMillion = 6.00D,
             ContextWindowTokens = Numeric1050000, BestForComplexity = ModelTaskComplexity.Low,
-            IsCodexOptimized = true, Notes = "Codex model for clear, repeatable, high-volume work."
+            IsCodexOptimized = true, Notes = "面向清晰、可重复、大批量工作的 Codex 模型。"
         },
         new ModelProfile
         {
             Id = "gpt-5.5", DisplayName = "GPT-5.5", InputPricePerMillion = 5.00D,
             OutputPricePerMillion = 30.00D, ContextWindowTokens = Numeric1050000,
             BestForComplexity = ModelTaskComplexity.High,
-            Notes = "Frontier model for complex coding and professional work."
+            Notes = "面向复杂编码与专业工作的前沿模型。"
         },
         new ModelProfile
         {
             Id = "gpt-5.4", DisplayName = "GPT-5.4", InputPricePerMillion = 2.50D,
             OutputPricePerMillion = 15.00D, ContextWindowTokens = Numeric1050000,
             BestForComplexity = ModelTaskComplexity.High,
-            Notes = "More affordable frontier model for coding and professional work."
+            Notes = "更经济的前沿模型，适用于编码与专业工作。"
         },
         new ModelProfile
         {
             Id = "gpt-5.4-mini", DisplayName = "GPT-5.4 Mini", InputPricePerMillion = 0.75D,
             OutputPricePerMillion = 4.50D, ContextWindowTokens = 400_000,
             BestForComplexity = ModelTaskComplexity.Medium,
-            Notes = "Lower-cost model suitable for focused edits, tests, and sub-agent tasks."
+            Notes = "低成本模型，适合聚焦编辑、测试与子智能体任务。"
         },
         new ModelProfile
         {
             Id = "gpt-5.3-codex-spark", DisplayName = "GPT-5.3 Codex Spark",
             InputPricePerMillion = 0D, OutputPricePerMillion = 0D, ContextWindowTokens = 128_000,
             BestForComplexity = ModelTaskComplexity.Low, IsCodexOptimized = true,
-            Notes = "Research-preview Codex model with separate entitlement rate limits and no published per-token price."
+            Notes = "研究预览版 Codex 模型，拥有独立的配额速率限制，且未公布每 token 价格。"
         }
     ];
 
@@ -240,9 +240,9 @@ public sealed class ModelAnalyticsService : IModelAnalyticsService
         {
             "architecture", "security", "authentication", "authorization", "migration", "production",
             "release", "debug", "exception", "threading", "concurrency", "memory", "mcp",
-            "visual studio extension", "vsix", "reactiveui", "refactor",
+            "Visual Studio 扩展", "vsix", "reactiveui", "refactor",
         };
-        var mediumTerms = new[] { "test", "review", "explain", "document", "optimize", "selection", "single file", "focused" };
+        var mediumTerms = new[] { "test", "review", "explain", "document", "optimize", "selection", "单文件", "focused" };
         var words = prompt.Split([' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length;
 
         if (request.Options.Mode == CodexRunMode.Build
@@ -290,9 +290,9 @@ public sealed class ModelAnalyticsService : IModelAnalyticsService
     private string BuildReason(ModelTaskComplexity complexity, ModelProfile recommended, ModelProfile primary, ModelProfile budget, double savings)
     {
         return recommended.Id.Equals(primary.Id, StringComparison.OrdinalIgnoreCase)
-            ? $"Use {primary.Id} because this request is classified as {complexity.ToString().ToLowerInvariant()} complexity."
-            : $"Use {budget.Id} for this {complexity.ToString().ToLowerInvariant()} complexity request; "
-                + $"estimated savings are {savings.ToString("F0", CultureInfo.InvariantCulture)}%.";
+            ? $"建议使用 {primary.Id}，因为该请求被判定为 {complexity.ToString().ToLowerInvariant()} 复杂度。"
+            : $"建议对此 {complexity.ToString().ToLowerInvariant()} 复杂度请求使用 {budget.Id}；"
+                + $"预计可节省 {savings.ToString("F0", CultureInfo.InvariantCulture)}%。";
     }
 
     /// <summary>Builds summary.</summary>
@@ -302,7 +302,7 @@ public sealed class ModelAnalyticsService : IModelAnalyticsService
     {
         return string.Format(
             CultureInfo.InvariantCulture,
-            "Estimated {0:N0} input / {1:N0} output tokens. Primary {2} about ${3:F4}; budget {4} about ${5:F4}; failover {6}. Recommendation: {7} ({8:F0}% possible savings).",
+            "预计输入 {0:N0} / 输出 {1:N0} 个 token。主模型 {2} 约 ${3:F4}；低成本模型 {4} 约 ${5:F4}；故障转移 {6}。建议：{7}（最多可节省 {8:F0}%）。",
             estimate.EstimatedInputTokens,
             estimate.EstimatedOutputTokens,
             estimate.PrimaryModel,
@@ -339,7 +339,7 @@ public sealed class ModelAnalyticsService : IModelAnalyticsService
             OutputPricePerMillion = fallback.OutputPricePerMillion,
             ContextWindowTokens = fallback.ContextWindowTokens,
             BestForComplexity = fallback.BestForComplexity,
-            Notes = "Unknown model id; estimated with GPT-6.1 Sol standard API pricing until the profile is added."
+            Notes = "未知模型 ID；在补充模型档案前，按 GPT-6.1 Sol 的标准 API 价格估算。"
         };
     }
 }

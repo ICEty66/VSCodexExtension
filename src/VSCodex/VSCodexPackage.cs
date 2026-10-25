@@ -21,7 +21,7 @@ namespace VSCodex;
 
 /// <summary>Provides the vS Codex Package implementation.</summary>
 [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-[InstalledProductRegistration("VSCodex", "VSCodex tool window with ReactiveUI, skills, MCP, and memory", "0.4.1")]
+[InstalledProductRegistration("VSCodex", "VSCodex 工具窗口：ReactiveUI、技能、MCP 与记忆", "0.4.1")]
 [ProvideMenuResource("Menus.ctmenu", 5)]
 [ProvideOptionPage(typeof(OptionsProvider.GeneralOptions), "VSCodex", "General", 0, 0, true)]
 [ProvideProfile(typeof(OptionsProvider.GeneralOptions), "VSCodex", "General", 0, 0, true)]
@@ -226,7 +226,7 @@ public sealed class VSCodexPackage : AsyncPackage
         var window = await ShowToolWindowAsync(typeof(VSCodexToolWindowPane), 0, true, DisposalToken).ConfigureAwait(true);
         if (window is null || window.Frame is null)
         {
-            throw new NotSupportedException("Cannot create VSCodex tool window on first launch.");
+            throw new NotSupportedException("首次启动时无法创建 VSCodex 工具窗口。");
         }
 
         MarkToolWindowOpenedOnFirstLaunch(settingsStore);

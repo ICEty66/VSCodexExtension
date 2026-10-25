@@ -66,7 +66,7 @@ public sealed class SkillIndexService : ISkillIndexService
     {
         if (string.IsNullOrWhiteSpace(root))
         {
-            throw new ArgumentException("A skill root folder is required.", nameof(root));
+            throw new ArgumentException("需要指定一个技能根目录。", nameof(root));
         }
 
         var normalizedName = NormalizeSkillName(name);
@@ -122,7 +122,7 @@ public sealed class SkillIndexService : ISkillIndexService
         var value = (name ?? string.Empty).Trim();
         if (value.Length == 0 || !char.IsLetterOrDigit(value[0]) || value.Any(ch => !(char.IsLetterOrDigit(ch) || ch == '.' || ch == '_' || ch == '-')))
         {
-            throw new ArgumentException("Skill names must start with a letter or digit and can contain letters, digits, '.', '_' or '-'.", nameof(name));
+            throw new ArgumentException("技能名称必须以字母或数字开头，且只能包含字母、数字、'.'、'_' 或 '-'。", nameof(name));
         }
 
         return value;
@@ -135,7 +135,7 @@ public sealed class SkillIndexService : ISkillIndexService
     private static string BuildSkillTemplate(string name, string description)
     {
         var summary = string.IsNullOrWhiteSpace(description)
-            ? "Describe when VSCodex should use this skill."
+            ? "描述 VSCodex 应在何时使用该技能。"
             : description.Trim();
         return string.Join(
             Environment.NewLine,

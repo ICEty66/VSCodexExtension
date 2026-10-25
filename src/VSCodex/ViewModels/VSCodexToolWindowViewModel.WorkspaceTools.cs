@@ -27,11 +27,11 @@ public sealed partial class VSCodexToolWindowViewModel
                 _memoryStore.LoadWorkspace(_workspace.CurrentWorkspaceRoot);
             }
 
-            Status = (string.IsNullOrWhiteSpace(_workspace.CurrentWorkspaceRoot) ? "VSCodex ready; open a solution or repository folder" : ($"VSCodex ready for {_workspace.CurrentWorkspaceRoot}"));
+            Status = (string.IsNullOrWhiteSpace(_workspace.CurrentWorkspaceRoot) ? "VSCodex 已就绪；请打开解决方案或仓库文件夹" : ($"VSCodex 已就绪：{_workspace.CurrentWorkspaceRoot}"));
         }
         catch (Exception ex)
         {
-            Status = $"VSCodex startup context deferred: {ex.Message}";
+            Status = $"VSCodex 启动上下文已延后：{ex.Message}";
         }
     }
 
@@ -48,11 +48,11 @@ public sealed partial class VSCodexToolWindowViewModel
         WorkspaceIdentity identity = _workspace.CurrentWorkspaceIdentity;
         if (identity is null || string.IsNullOrWhiteSpace(identity.RootPath))
         {
-            Status = "Open a solution or repository folder before scanning project memory";
+            Status = "扫描项目记忆前请先打开解决方案或仓库文件夹";
             return;
         }
 
-        Status = "Scanning project memory with ReactiveMemory ProjectMiner...";
+        Status = "正在使用 ReactiveMemory ProjectMiner 扫描项目记忆……";
         ReactiveMemoryCallResult scan = await Task.Run(
             () => _reactiveMemory.ScanWorkspaceAsync(identity))
             .ConfigureAwait(continueOnCapturedContext: false);
@@ -76,12 +76,11 @@ public sealed partial class VSCodexToolWindowViewModel
             return true;
         }
 
-        string message = "VSCodex cannot run yet because Visual Studio has not provided a solution " +
-            "or repository folder project root. Wait for the project to finish loading, open a " +
-            "solution or repository folder, or use @ references after a project is available. " +
-            "The installed VSIX folder will not be used as the execution root.";
+        string message = "VSCodex 暂时无法运行，因为 Visual Studio 尚未提供解决方案或仓库文件夹的项目根目录。" +
+            "请等待项目加载完成、打开解决方案或仓库文件夹，或在项目可用后使用 @ 引用。" +
+            "已安装的 VSIX 文件夹不会被用作执行根目录。";
         _ = AddMessage(CodexMessageRole.System, message);
-        Status = "VSCodex waiting for Visual Studio project context";
+        Status = "VSCodex 正在等待 Visual Studio 项目上下文";
         return false;
     }
 
@@ -97,7 +96,7 @@ public sealed partial class VSCodexToolWindowViewModel
 
         await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
         SelectedMcpServer = server;
-        Status = $"Discovering MCP tools for {server.Name}...";
+        Status = $"正在发现 {server.Name} 的 MCP 工具……";
         IReadOnlyList<McpToolDefinition> tools = await Task.Run(
             () => _mcpTools.DiscoverToolsAsync(server))
             .ConfigureAwait(continueOnCapturedContext: false);
@@ -105,7 +104,7 @@ public sealed partial class VSCodexToolWindowViewModel
         Replace(McpToolSuggestions, tools);
         Replace(McpToolInputFields, []);
         SelectedMcpTool = null;
-        Status = ((tools.Count == 0) ? "No MCP tools discovered" : $"Discovered {tools.Count} MCP tool(s) for {server.Name}");
+        Status = ((tools.Count == 0) ? "未发现 MCP 工具" : $"已为 {server.Name} 发现 {tools.Count} 个 MCP 工具");
     }
 
     /// <summary>Selects mcp Tool.</summary>
@@ -119,8 +118,8 @@ public sealed partial class VSCodexToolWindowViewModel
 
         SelectedMcpTool = tool;
         Replace(McpToolInputFields, tool.InputFields.Select(CloneField));
-        McpInputPrompt = ((tool.InputFields.Count == 0) ? "No input required." : "Provide values for the fields below. Optional fields show 'option' after the field name.");
-        Status = $"Selected MCP tool {tool.DisplayName}";
+        McpInputPrompt = ((tool.InputFields.Count == 0) ? "无需输入。" : "请为下方字段填写内容。可选字段会在字段名后标注“可选”。");
+        Status = $"已选择 MCP 工具 {tool.DisplayName}";
     }
 
     /// <summary>Performs the insert Mcp Tool Invocation operation.</summary>
@@ -136,7 +135,7 @@ public sealed partial class VSCodexToolWindowViewModel
         SelectedMcpTool.InputFields.AddRange(McpToolInputFields.Select(CloneField));
         string invocation = _mcpTools.BuildInvocationPrompt(SelectedMcpServer, SelectedMcpTool);
         Prompt = (string.IsNullOrWhiteSpace(Prompt) ? invocation : (Prompt.TrimEnd() + Environment.NewLine + invocation));
-        Status = "Inserted MCP tool invocation into prompt";
+        Status = "已将 MCP 工具调用插入提示词";
     }
 
     /// <summary>Adds mcp Server.</summary>
@@ -152,7 +151,7 @@ public sealed partial class VSCodexToolWindowViewModel
         McpServerDefinition server = _mcpConfig.CreateTemplate(transportType);
         McpServers.Add(server);
         SelectedMcpServer = server;
-        Status = "Added MCP server draft. Fill in the details, then save MCP servers.";
+        Status = "已添加 MCP 服务器草稿。请填写细节后保存 MCP 服务器。";
     }
 
     /// <summary>Removes mcp Server.</summary>
@@ -170,7 +169,7 @@ public sealed partial class VSCodexToolWindowViewModel
             SelectedMcpServer = McpServers.FirstOrDefault();
         }
 
-        Status = "Removed MCP server draft. Save MCP servers to update Codex config.";
+        Status = "已移除 MCP 服务器草稿。保存 MCP 服务器以更新 Codex 配置。";
     }
 
     /// <summary>Saves mcp Servers.</summary>
@@ -183,7 +182,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
 
         _mcpConfig.Save(McpServers.ToList());
-        Status = $"Saved MCP servers to {LocalPaths.UserCodexConfig}";
+        Status = $"已将 MCP 服务器保存到 {LocalPaths.UserCodexConfig}";
     }
 
     /// <summary>Creates skill.</summary>
@@ -202,12 +201,12 @@ public sealed partial class VSCodexToolWindowViewModel
             NewSkillName = string.Empty;
             NewSkillDescription = string.Empty;
             Refresh();
-            Status = $"Created skill {skillPath}";
+            Status = $"已创建技能 {skillPath}";
             OpenPath(skillPath);
         }
         catch (Exception ex)
         {
-            Status = $"Create skill failed: {ex.Message}";
+            Status = $"创建技能失败：{ex.Message}";
         }
     }
 
@@ -227,7 +226,7 @@ public sealed partial class VSCodexToolWindowViewModel
                                       where !string.IsNullOrWhiteSpace(x)
                                       select x).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         SaveSettingsForCurrentWorkspace(settings);
-        Status = $"Saved {settings.EnabledSkillPaths.Count} enabled skill(s)";
+        Status = $"已保存 {settings.EnabledSkillPaths.Count} 个已启用技能";
         UpdateAnalytics(Prompt);
     }
 
@@ -243,7 +242,7 @@ public sealed partial class VSCodexToolWindowViewModel
         string path = SkillRootPathInput.Trim();
         if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
         {
-            Status = "Enter an existing folder to add a skill root";
+            Status = "请输入一个已存在的文件夹以添加技能根目录";
             return;
         }
 
@@ -256,7 +255,7 @@ public sealed partial class VSCodexToolWindowViewModel
 
         SkillRootPathInput = string.Empty;
         Refresh();
-        Status = $"Added skill root {path}";
+        Status = $"已添加技能根目录 {path}";
     }
 
     /// <summary>Opens skills Folder.</summary>
@@ -308,7 +307,7 @@ public sealed partial class VSCodexToolWindowViewModel
             }
             catch (Exception ex)
             {
-                Status = $"Prompt context update failed: {ex.Message}";
+                Status = $"提示上下文更新失败：{ex.Message}";
             }
         }).Task);
     }
@@ -318,8 +317,8 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         Replace(McpToolSuggestions, []);
         Replace(McpToolInputFields, []);
-        McpInputPrompt = "Select an MCP server to list tools. Then select a tool and provide required input fields; optional fields show 'option'.";
-        Status = ((McpServers.Count == 0) ? "No MCP servers are configured in .codex/config.toml" : "Select an MCP server from the MCP tab");
+        McpInputPrompt = "请选择一个 MCP 服务器以列出工具，然后选择一个工具并填写必填输入字段；可选字段会标注“可选”。";
+        Status = ((McpServers.Count == 0) ? ".codex/config.toml 中未配置任何 MCP 服务器" : "请在 MCP 标签页中选择一个 MCP 服务器");
     }
 
     /// <summary>Attempts to handle Local Slash Command.</summary>
@@ -338,7 +337,7 @@ public sealed partial class VSCodexToolWindowViewModel
         Action? action = commandName switch
         {
             "/threads" or "/history" => ShowHistory,
-            "/models" or "/settings" => () => Status = "Open Tools > Options > VSCodex to change settings",
+            "/models" or "/settings" => () => Status = "打开“工具 > 选项 > VSCodex”以更改设置",
             "/refresh" => Refresh,
             _ => null
         };
@@ -359,13 +358,13 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         (int TabIndex, string Title)? panel = commandName switch
         {
-            "/setup" or "/prerequisites" => (1, "VSCodex prerequisites"),
-            "/context" or "/files" or "/selection" => (Numeric2, "VSCodex context"),
-            "/skills" => (Numeric3, "VSCodex skills"),
-            "/tools" or "/mcp" => (Numeric4, "VSCodex MCP tools"),
-            "/memory" => (Numeric5, "VSCodex memory"),
-            "/agents" => (Numeric6, "VSCodex agents"),
-            "/attachments" => (Numeric7, "VSCodex attachments"),
+            "/setup" or "/prerequisites" => (1, "VSCodex 前置条件"),
+            "/context" or "/files" or "/selection" => (Numeric2, "VSCodex 上下文"),
+            "/skills" => (Numeric3, "VSCodex 技能"),
+            "/tools" or "/mcp" => (Numeric4, "VSCodex MCP 工具"),
+            "/memory" => (Numeric5, "VSCodex 记忆"),
+            "/agents" => (Numeric6, "VSCodex 智能体"),
+            "/attachments" => (Numeric7, "VSCodex 附件"),
             _ => null
         };
         if (!panel.HasValue)
@@ -413,7 +412,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
         else
         {
-            Status = $"ReactiveMemory did not save memory: {memory.Message}";
+            Status = $"ReactiveMemory 未保存记忆：{memory.Message}";
         }
     }
 
@@ -422,7 +421,7 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         OpenFileDialog dialog = new OpenFileDialog
         {
-            Title = "Attach files for VSCodex",
+            Title = "为 VSCodex 附加文件",
             Filter = "Supported files|*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp;*.pdf;*.doc;" +
                 "*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.txt;*.md;*.cs;*.xaml;*.json;*.xml|" +
                 "Images|*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp|Documents|*.pdf;*.doc;" +
@@ -452,11 +451,11 @@ public sealed partial class VSCodexToolWindowViewModel
         {
             Prompt = (string.IsNullOrWhiteSpace(Prompt) ? transcript : ($"{Prompt.TrimEnd()} {transcript}"));
             VoiceTranscriptRevision++;
-            Status = (shouldSubmit ? "Voice command added; sending VSCodex request" : "Voice transcript added");
+            Status = (shouldSubmit ? "已添加语音指令；正在发送 VSCodex 请求" : "已添加语音转写");
         }
         else if (shouldSubmit)
         {
-            Status = (string.IsNullOrWhiteSpace(Prompt) ? "Voice command heard; dictate a prompt before saying send" : "Voice command sending VSCodex request");
+            Status = (string.IsNullOrWhiteSpace(Prompt) ? "已听到语音指令；请先口述提示词，再说“发送”" : "语音指令正在发送 VSCodex 请求");
         }
 
         if (!shouldSubmit || string.IsNullOrWhiteSpace(Prompt))
@@ -488,7 +487,7 @@ public sealed partial class VSCodexToolWindowViewModel
             {
                 await Task.Delay(TimeSpan.FromSeconds(Numeric4), _lifetime.Token).ConfigureAwait(continueOnCapturedContext: false);
                 await _joinableTaskFactory.SwitchToMainThreadAsync(_lifetime.Token);
-                Status = "Loading VSCodex tools and checking setup in the background...";
+                Status = "正在后台加载 VSCodex 工具并检查配置……";
                 string workspaceRoot = _workspace.CurrentWorkspaceRoot;
                 List<string> skillRoots = _settingsStore.Current.SkillRoots.Concat([Path.Combine(workspaceRoot ?? string.Empty, ".codex", "skills")]).ToList();
                 await Task.Run(
@@ -509,7 +508,7 @@ public sealed partial class VSCodexToolWindowViewModel
             catch (Exception ex2)
             {
                 await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-                Status = $"VSCodex background startup checks failed: {ex2.Message}";
+                Status = $"VSCodex 后台启动检查失败：{ex2.Message}";
             }
         }).Task);
     }
@@ -549,31 +548,31 @@ public sealed partial class VSCodexToolWindowViewModel
         if (report?.CanRunSdkBridge == false)
         {
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-            SetRateLimitsUnavailable("Codex SDK unavailable");
+            SetRateLimitsUnavailable("Codex SDK 不可用");
             return;
         }
 
         await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-        SetRateLimitRows("Fetching Codex telemetry", 0, string.Empty);
-        RateLimitUpdatedAt = "Checking Codex rate-limit telemetry";
+        SetRateLimitRows("正在获取 Codex 遥测", 0, string.Empty);
+        RateLimitUpdatedAt = "正在检查 Codex 速率限制遥测";
         try
         {
             JObject? rateLimits = await _codex.GetRateLimitsAsync().ConfigureAwait(continueOnCapturedContext: false);
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
             if (rateLimits is null)
             {
-                SetRateLimitsUnavailable("Codex telemetry unavailable");
+                SetRateLimitsUnavailable("Codex 遥测不可用");
                 return;
             }
 
             UpdateRateLimitsFromJson(rateLimits.ToString());
-            SetRateLimitsUnavailable("Codex did not report this account limit");
+            SetRateLimitsUnavailable("Codex 未报告该账户限额");
         }
         catch (Exception ex)
         {
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-            SetRateLimitsUnavailable("Codex telemetry unavailable");
-            RateLimitUpdatedAt = $"Codex rate-limit check failed: {ex.Message}";
+            SetRateLimitsUnavailable("Codex 遥测不可用");
+            RateLimitUpdatedAt = $"Codex 速率限制检查失败：{ex.Message}";
         }
     }
 
@@ -585,16 +584,16 @@ public sealed partial class VSCodexToolWindowViewModel
         {
             if (row.HasTelemetry)
             {
-                if (!row.ToolTip.Contains("Last received"))
+                if (!row.ToolTip.Contains("最近一次"))
                 {
-                    row.ToolTip += " Last received account telemetry is retained when a refresh omits this window.";
+                    row.ToolTip += " 刷新时若未包含该窗口的数据，则保留最近一次收到的账户遥测。";
                 }
             }
             else
             {
-                row.Remaining = "Unavailable";
+                row.Remaining = "不可用";
                 row.ResetText = string.Empty;
-                row.ToolTip = $"{text}. Refresh the account status or check Codex sign-in.";
+                row.ToolTip = $"{text}。请刷新账户状态或检查 Codex 登录。";
             }
         }
 
@@ -641,7 +640,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
 
         _ = AddMessage(CodexMessageRole.System, CodexSetupInstructions);
-        Status = "VSCodex setup required. Open Tools > Options > VSCodex to adjust runtime paths.";
+        Status = "需要完成 VSCodex 配置。请打开“工具 > 选项 > VSCodex”调整运行时路径。";
         return false;
     }
 
@@ -654,7 +653,7 @@ public sealed partial class VSCodexToolWindowViewModel
         Replace(Prerequisites, report.Items);
         CodexSetupSummary = report.Summary;
         CodexSetupInstructions = report.Instructions;
-        Status = (report.CanRunSdkBridge ? "VSCodex prerequisites ready" : "VSCodex setup required");
+        Status = (report.CanRunSdkBridge ? "VSCodex 前置条件已就绪" : "需要完成 VSCodex 配置");
         if (!report.CanRunSdkBridge)
         {
             IsToolPanelOpen = true;
@@ -676,18 +675,18 @@ public sealed partial class VSCodexToolWindowViewModel
         string? command = prerequisite?.ActionCommand;
         if (prerequisite is null || command is null || command.Trim().Length == 0)
         {
-            Status = "No prerequisite command to copy";
+            Status = "没有可复制的前置条件命令";
             return;
         }
 
         try
         {
             Clipboard.SetText(command);
-            Status = $"Copied {prerequisite.Name} prerequisite command";
+            Status = $"已复制 {prerequisite.Name} 的前置条件命令";
         }
         catch (Exception ex)
         {
-            Status = $"Could not copy prerequisite command: {ex.Message}";
+            Status = $"无法复制前置条件命令：{ex.Message}";
         }
     }
 
@@ -698,7 +697,7 @@ public sealed partial class VSCodexToolWindowViewModel
         string? command = prerequisite?.ActionCommand;
         if (prerequisite is null || command is null || command.Trim().Length == 0)
         {
-            Status = "No prerequisite update command available";
+            Status = "没有可用的前置条件更新命令";
             return;
         }
 
@@ -711,11 +710,11 @@ public sealed partial class VSCodexToolWindowViewModel
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 UseShellExecute = true
             });
-            Status = $"Started prerequisite update for {prerequisite.Name}";
+            Status = $"已启动 {prerequisite.Name} 的前置条件更新";
         }
         catch (Exception ex)
         {
-            Status = $"Could not start prerequisite update: {ex.Message}";
+            Status = $"无法启动前置条件更新：{ex.Message}";
         }
     }
 
@@ -737,7 +736,7 @@ public sealed partial class VSCodexToolWindowViewModel
         IsPaused = false;
         Attachments.Clear();
         OrchestrationSections.Clear();
-        Status = "New VSCodex thread";
+        Status = "新建 VSCodex 线程";
         RefreshHistory();
         UpdateAnalytics(Prompt);
     }

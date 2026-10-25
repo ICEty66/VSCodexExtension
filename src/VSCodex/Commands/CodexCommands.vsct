@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <Extern href="stdidcmd.h" />
   <Extern href="vsshlids.h" />
@@ -17,15 +17,15 @@
         <Parent guid="guidCommandSet" id="CodexViewMenuGroup" />
         <CommandFlag>AlwaysCreate</CommandFlag>
         <Strings>
-          <ButtonText>VSCodex Actions</ButtonText>
-          <CommandName>VSCodex Actions</CommandName>
+          <ButtonText>VSCodex 操作</ButtonText>
+          <CommandName>VSCodex 操作</CommandName>
         </Strings>
       </Menu>
       <Menu guid="guidCommandSet" id="VSCodexEditorContextMenu" priority="0x0100" type="Menu">
         <Parent guid="guidCommandSet" id="VSCodexCodeWindowContextMenuGroup" />
         <Strings>
-          <ButtonText>VSCodex Actions</ButtonText>
-          <CommandName>VSCodex Editor Actions</CommandName>
+          <ButtonText>VSCodex 操作</ButtonText>
+          <CommandName>VSCodex 编辑器操作</CommandName>
         </Strings>
       </Menu>
     </Menus>
@@ -84,7 +84,7 @@
         <CommandFlag>DontCache</CommandFlag>
         <Strings>
           <ButtonText>VSCodex</ButtonText>
-          <CommandName>View.VSCodex</CommandName>
+          <CommandName>视图.VSCodex</CommandName>
           <LocCanonicalName>View.VSCodex</LocCanonicalName>
         </Strings>
       </Button>
@@ -92,8 +92,8 @@
       <Button guid="guidCommandSet" id="OpenOptionsCommandId" priority="0x0110" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexTopLevelMenuGroup" />
         <Strings>
-          <ButtonText>VSCodex Settings</ButtonText>
-          <CommandName>Open VSCodex Settings</CommandName>
+          <ButtonText>VSCodex 设置</ButtonText>
+          <CommandName>打开 VSCodex 设置</CommandName>
           <LocCanonicalName>VSCodex.Settings</LocCanonicalName>
         </Strings>
       </Button>
@@ -101,8 +101,8 @@
       <Button guid="guidCommandSet" id="CreateTestFromSelectionCommandId" priority="0x0120" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Generate Tests</ButtonText>
-          <CommandName>Create VSCodex Test for Selection</CommandName>
+          <ButtonText>生成测试</ButtonText>
+          <CommandName>为选中内容创建 VSCodex 测试</CommandName>
           <LocCanonicalName>VSCodex.GenerateTests</LocCanonicalName>
         </Strings>
       </Button>
@@ -110,8 +110,8 @@
       <Button guid="guidCommandSet" id="DebugWithCodexCommandId" priority="0x0130" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Debug Selection</ButtonText>
-          <CommandName>Debug Current Context with VSCodex</CommandName>
+          <ButtonText>调试选中内容</ButtonText>
+          <CommandName>使用 VSCodex 调试当前上下文</CommandName>
           <LocCanonicalName>VSCodex.Debug</LocCanonicalName>
         </Strings>
       </Button>
@@ -119,8 +119,8 @@
       <Button guid="guidCommandSet" id="CreatePlanCommandId" priority="0x0140" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Create Agent Plan</ButtonText>
-          <CommandName>Create VSCodex Plan with Agents</CommandName>
+          <ButtonText>创建智能体计划</ButtonText>
+          <CommandName>使用智能体创建 VSCodex 计划</CommandName>
           <LocCanonicalName>VSCodex.CreatePlan</LocCanonicalName>
         </Strings>
       </Button>
@@ -128,8 +128,8 @@
       <Button guid="guidCommandSet" id="AskCodexCommandId" priority="0x0110" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Add to VSCodex Chat</ButtonText>
-          <CommandName>Ask VSCodex About Selection</CommandName>
+          <ButtonText>添加到 VSCodex 对话</ButtonText>
+          <CommandName>向 VSCodex 询问选中内容</CommandName>
           <LocCanonicalName>VSCodex.AddToChat</LocCanonicalName>
         </Strings>
       </Button>
@@ -137,8 +137,8 @@
       <Button guid="guidCommandSet" id="ExplainSelectionCommandId" priority="0x0111" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Explain</ButtonText>
-          <CommandName>Explain Selection with VSCodex</CommandName>
+          <ButtonText>解释</ButtonText>
+          <CommandName>使用 VSCodex 解释选中内容</CommandName>
           <LocCanonicalName>VSCodex.Explain</LocCanonicalName>
         </Strings>
       </Button>
@@ -146,8 +146,8 @@
       <Button guid="guidCommandSet" id="FixSelectionCommandId" priority="0x0112" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Fix Selection</ButtonText>
-          <CommandName>Fix Selection with VSCodex</CommandName>
+          <ButtonText>修复选中内容</ButtonText>
+          <CommandName>使用 VSCodex 修复选中内容</CommandName>
           <LocCanonicalName>VSCodex.FixSelection</LocCanonicalName>
         </Strings>
       </Button>
@@ -155,8 +155,8 @@
       <Button guid="guidCommandSet" id="ReviewSelectionCommandId" priority="0x0113" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Review Selection</ButtonText>
-          <CommandName>Review Selection with VSCodex</CommandName>
+          <ButtonText>审阅选中内容</ButtonText>
+          <CommandName>使用 VSCodex 审阅选中内容</CommandName>
           <LocCanonicalName>VSCodex.Review</LocCanonicalName>
         </Strings>
       </Button>
@@ -164,8 +164,8 @@
       <Button guid="guidCommandSet" id="OptimizeSelectionCommandId" priority="0x0114" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Optimize Selection</ButtonText>
-          <CommandName>Optimize Selection with VSCodex</CommandName>
+          <ButtonText>优化选中内容</ButtonText>
+          <CommandName>使用 VSCodex 优化选中内容</CommandName>
           <LocCanonicalName>VSCodex.Optimize</LocCanonicalName>
         </Strings>
       </Button>
@@ -173,8 +173,8 @@
       <Button guid="guidCommandSet" id="GenerateDocsCommandId" priority="0x0115" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexEditorContextMenuActionsGroup" />
         <Strings>
-          <ButtonText>Generate Comments</ButtonText>
-          <CommandName>Generate Documentation with VSCodex</CommandName>
+          <ButtonText>生成注释</ButtonText>
+          <CommandName>使用 VSCodex 生成文档</CommandName>
           <LocCanonicalName>VSCodex.GenerateComments</LocCanonicalName>
         </Strings>
       </Button>
@@ -182,8 +182,8 @@
       <Button guid="guidCommandSet" id="ConfigureMemoryCommandId" priority="0x0150" type="Button">
         <Parent guid="guidCommandSet" id="CodexToolsMenuGroup" />
         <Strings>
-          <ButtonText>VSCodex ReactiveMemory Setup</ButtonText>
-          <CommandName>Configure VSCodex ReactiveMemory</CommandName>
+          <ButtonText>VSCodex ReactiveMemory 配置</ButtonText>
+          <CommandName>配置 VSCodex ReactiveMemory</CommandName>
           <LocCanonicalName>VSCodex.ReactiveMemorySetup</LocCanonicalName>
         </Strings>
       </Button>
@@ -191,8 +191,8 @@
       <Button guid="guidCommandSet" id="FixActiveExceptionCommandId" priority="0x0131" type="Button">
         <Parent guid="guidCommandSet" id="CodexDebugMenuGroup" />
         <Strings>
-          <ButtonText>Fix Active Exception</ButtonText>
-          <CommandName>Fix Active Exception with VSCodex</CommandName>
+          <ButtonText>修复活动异常</ButtonText>
+          <CommandName>使用 VSCodex 修复活动异常</CommandName>
           <LocCanonicalName>VSCodex.FixActiveException</LocCanonicalName>
         </Strings>
       </Button>
@@ -200,8 +200,8 @@
       <Button guid="guidCommandSet" id="FixActiveErrorCommandId" priority="0x0132" type="Button">
         <Parent guid="guidCommandSet" id="CodexErrorListContextMenuGroup" />
         <Strings>
-          <ButtonText>Fix with VSCodex</ButtonText>
-          <CommandName>Fix with VSCodex</CommandName>
+          <ButtonText>使用 VSCodex 修复</ButtonText>
+          <CommandName>使用 VSCodex 修复</CommandName>
           <LocCanonicalName>VSCodex.FixWithVSCodex</LocCanonicalName>
         </Strings>
       </Button>
@@ -209,8 +209,8 @@
       <Button guid="guidCommandSet" id="FixTestFailureCommandId" priority="0x0121" type="Button">
         <Parent guid="guidCommandSet" id="VSCodexTopLevelMenuGroup" />
         <Strings>
-          <ButtonText>Fix Test Failure</ButtonText>
-          <CommandName>Fix Test Failure with VSCodex</CommandName>
+          <ButtonText>修复测试失败</ButtonText>
+          <CommandName>使用 VSCodex 修复测试失败</CommandName>
           <LocCanonicalName>VSCodex.FixTestFailure</LocCanonicalName>
         </Strings>
       </Button>

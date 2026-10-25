@@ -62,7 +62,7 @@ internal sealed class CodexCliJsonParser(string? threadId = null)
         }
         catch (JsonException)
         {
-            Failure = "Codex CLI emitted invalid JSON output.";
+            Failure = "Codex CLI 输出了无效的 JSON。";
             events.Add(CreateEvent(ProgressType, Failure, line));
         }
 
@@ -79,21 +79,21 @@ internal sealed class CodexCliJsonParser(string? threadId = null)
         if (type == "thread.started")
         {
             ThreadId = json.Value<string>("thread_id") ?? ThreadId;
-            events.Add(CreateEvent(ProgressType, "Started Codex thread", line));
+            events.Add(CreateEvent(ProgressType, "已启动 Codex 线程", line));
             return;
         }
 
         if (type == "turn.started")
         {
             Completed = false;
-            events.Add(CreateEvent("turn-started", "Codex turn started", line));
+            events.Add(CreateEvent("turn-started", "Codex 回合已开始", line));
             return;
         }
 
         if (type == "turn.completed")
         {
             Completed = true;
-            events.Add(CreateEvent(ProgressType, "Codex turn completed", line));
+            events.Add(CreateEvent(ProgressType, "Codex 回合已完成", line));
             return;
         }
 
@@ -109,7 +109,7 @@ internal sealed class CodexCliJsonParser(string? threadId = null)
     {
         if (type is "turn.failed" or "error")
         {
-            Failure = json["error"]?.Value<string>("message") ?? json.Value<string>("message") ?? "Codex CLI turn failed.";
+            Failure = json["error"]?.Value<string>("message") ?? json.Value<string>("message") ?? "Codex CLI 回合失败。";
             events.Add(CreateEvent(ProgressType, Failure, line));
             return;
         }

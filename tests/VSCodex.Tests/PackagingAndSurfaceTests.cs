@@ -130,7 +130,7 @@ public sealed class PackagingAndSurfaceTests
 
         await Assert.That(package).Contains("ProvideOptionPage(typeof(OptionsProvider.GeneralOptions), \"VSCodex\", \"General\"");
         await Assert.That(options).Contains("class GeneralOptions : UIElementDialogPage");
-        await Assert.That(options).Contains("Follow-up behavior");
+        await Assert.That(options).Contains("后续消息行为");
         await Assert.That(view).DoesNotContain("Header=\"Settings\"");
         await Assert.That(view).Contains("Command=\"{Binding SteerCommand}\"");
         await Assert.That(view).Contains("Command=\"{Binding QueueCommand}\"");

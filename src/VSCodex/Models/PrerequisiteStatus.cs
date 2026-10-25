@@ -95,7 +95,7 @@ public sealed class PrerequisiteStatus : ReactiveObject
     public string ActionCommand => string.IsNullOrWhiteSpace(UpdateCommand) ? InstallCommand : UpdateCommand;
 
     /// <summary>Gets the action Button Text.</summary>
-    public string ActionButtonText => State == PrerequisiteState.Missing || HasMissingStatus(Status) ? "Install" : "Update";
+    public string ActionButtonText => State == PrerequisiteState.Missing || HasMissingStatus(Status) ? "安装" : "更新";
 
     /// <summary>Checks the setup error marker using the available framework API.</summary>
     /// <param name="status">The current setup message.</param>
@@ -103,9 +103,11 @@ public sealed class PrerequisiteStatus : ReactiveObject
     private static bool HasMissingStatus(string status)
     {
 #if NETFRAMEWORK
-        return status.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0;
+        return status.IndexOf("未找到", StringComparison.OrdinalIgnoreCase) >= 0
+            || status.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0;
 #else
-        return status.Contains("not found", StringComparison.OrdinalIgnoreCase);
+        return status.Contains("未找到", StringComparison.OrdinalIgnoreCase)
+            || status.Contains("not found", StringComparison.OrdinalIgnoreCase);
 #endif
     }
 }

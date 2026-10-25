@@ -64,10 +64,10 @@ internal sealed class OptionsPageControl : UserControl
         SetResourceReference(ForegroundProperty, EnvironmentColors.ToolWindowTextBrushKey);
         var root = new DockPanel { Margin = new(Layout16), LastChildFill = true };
         var header = new StackPanel { Margin = new(0, 0, 0, Layout12) };
-        _ = header.Children.Add(new TextBlock { Text = "VSCodex settings", FontSize = Layout20, FontWeight = FontWeights.SemiBold });
-        _ = header.Children.Add(new TextBlock { Text = "Search settings by name, category, or description.", Margin = new(0, Layout6, 0, Layout8), TextWrapping = TextWrapping.Wrap });
-        AutomationProperties.SetName(_search, "Search VSCodex settings");
-        _search.ToolTip = "Search settings";
+        _ = header.Children.Add(new TextBlock { Text = "VSCodex 设置", FontSize = Layout20, FontWeight = FontWeights.SemiBold });
+        _ = header.Children.Add(new TextBlock { Text = "按名称、类别或描述搜索设置。", Margin = new(0, Layout6, 0, Layout8), TextWrapping = TextWrapping.Wrap });
+        AutomationProperties.SetName(_search, "搜索 VSCodex 设置");
+        _search.ToolTip = "搜索设置";
         _search.Padding = new(Layout6);
         _ = header.Children.Add(_search);
         _ = header.Children.Add(_status);
@@ -109,7 +109,7 @@ internal sealed class OptionsPageControl : UserControl
         if (invalid.Count > 0)
         {
             _search.Clear();
-            _status.Text = "Correct the highlighted settings before applying changes.";
+            _status.Text = "应用更改前请先修正高亮显示的设置。";
             invalid[0].Row.BringIntoView();
             _ = invalid[0].Input.Focus();
             return false;
@@ -163,7 +163,7 @@ internal sealed class OptionsPageControl : UserControl
         }
 
         var count = _editors.Count(editor => editor.Row.Visibility == Visibility.Visible);
-        _status.Text = count == 0 ? "No settings match your search." : $"{count} settings";
+        _status.Text = count == 0 ? "没有与搜索匹配的设置。" : $"{count} 项设置";
     }
 
     /// <summary>Converts persisted transport identities into concise user-facing choices.</summary>
@@ -177,8 +177,8 @@ internal sealed class OptionsPageControl : UserControl
         /// <returns>The display label.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value switch
         {
-            CodexTransportKind.SdkBridge => "Codex app-server",
-            CodexTransportKind.CliFallback => "CLI only",
+            CodexTransportKind.SdkBridge => "Codex 应用服务器",
+            CodexTransportKind.CliFallback => "仅 CLI",
             _ => value?.ToString() ?? string.Empty,
         };
 
@@ -250,12 +250,12 @@ internal sealed class OptionsPageControl : UserControl
             {
                 var reset = new Button
                 {
-                    Content = "Reset to default",
+                    Content = "重置为默认值",
                     HorizontalAlignment = HorizontalAlignment.Left,
                     Margin = new(0, Layout5, 0, 0),
                     Padding = new(Layout6, Layout2, Layout6, Layout2)
                 };
-                AutomationProperties.SetName(reset, $"Reset {property.DisplayName} to default");
+                AutomationProperties.SetName(reset, $"将 {property.DisplayName} 重置为默认值");
                 reset.Click += (_, _) =>
                 {
                     property.SetValue(draft, _defaultValue);
@@ -317,7 +317,7 @@ internal sealed class OptionsPageControl : UserControl
             }
             catch (Exception exception) when (exception is FormatException || exception is ArgumentException || exception is NotSupportedException || exception is OverflowException)
             {
-                _error.Text = $"Invalid value: {exception.Message}";
+                _error.Text = $"值无效：{exception.Message}";
                 AutomationProperties.SetHelpText(Input, $"{_property.Description} {_error.Text}");
                 return false;
             }
@@ -340,7 +340,7 @@ internal sealed class OptionsPageControl : UserControl
                 value = _property.Converter.ConvertFrom(this, CultureInfo.CurrentCulture, textValue);
             }
 
-            return value ?? throw new FormatException("Choose a value.");
+            return value ?? throw new FormatException("请选择一个值。");
         }
 
         /// <summary>Checks setting-specific limits without silently normalizing invalid values.</summary>
@@ -349,12 +349,12 @@ internal sealed class OptionsPageControl : UserControl
         {
             if (_property.PropertyType.IsEnum && !Enum.IsDefined(_property.PropertyType, value))
             {
-                throw new FormatException("Choose a supported value.");
+                throw new FormatException("请选择受支持的值。");
             }
 
             if (_property.Name == nameof(VSCodexOptionsModel.DefaultMaxAgentConcurrency) && (int)value < 1)
             {
-                throw new FormatException("Enter a whole number of at least 1.");
+                throw new FormatException("请输入不小于 1 的整数。");
             }
 
             if (_property.Name == nameof(VSCodexOptionsModel.DefaultInputAreaHeight))
@@ -362,7 +362,7 @@ internal sealed class OptionsPageControl : UserControl
                 var height = (double)value;
                 if (double.IsNaN(height) || double.IsInfinity(height) || height <= 0)
                 {
-                    throw new FormatException("Enter a finite height greater than zero.");
+                    throw new FormatException("请输入大于零的有限高度。");
                 }
             }
 
@@ -384,7 +384,7 @@ internal sealed class OptionsPageControl : UserControl
                 return;
             }
 
-            throw new FormatException("Choose a value supported by the current model.");
+            throw new FormatException("请选择当前模型支持的值。");
         }
 
         /// <summary>Creates the appropriate accessible setting editor.</summary>
@@ -393,7 +393,7 @@ internal sealed class OptionsPageControl : UserControl
         {
             if (_property.PropertyType == typeof(bool))
             {
-                var check = new CheckBox { Content = "Enabled" };
+                var check = new CheckBox { Content = "启用" };
                 check.Checked += (_, _) => _ = Validate();
                 check.Unchecked += (_, _) => _ = Validate();
                 return check;

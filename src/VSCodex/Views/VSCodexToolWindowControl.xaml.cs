@@ -815,7 +815,7 @@ public partial class VSCodexToolWindowControl : UserControl
 
         OpenFileDialog dialog = new OpenFileDialog
         {
-            Title = "Reference files for VSCodex",
+            Title = "为 VSCodex 引用文件",
             Filter = "Code and text files|*.cs;*.xaml;*.json;*.xml;*.md;*.txt;*.props;*.targets;*.csproj;*.sln;*.slnx;" +
                 "*.config;*.yml;*.yaml;*.ps1;*.ts;*.tsx;*.js;*.jsx;*.css;*.html;*.razor|All files|*.*",
             Multiselect = true

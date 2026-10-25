@@ -65,7 +65,7 @@ public sealed class ElicitationField
         Name = name;
         _schema = schema;
         Required = required;
-        Label = (schema.Value<string>("title") ?? name) + (required ? " *" : " (optional)");
+        Label = (schema.Value<string>("title") ?? name) + (required ? " *" : "（可选）");
         Description = schema.Value<string>("description") ?? string.Empty;
         Choices = new();
         if (schema[EnumValue] is JArray values)
@@ -138,7 +138,7 @@ public sealed class ElicitationField
         {
             if (Required)
             {
-                error = $"Enter a value for {Name}.";
+                error = $"请输入 {Name} 的值。";
             }
 
             return !Required;
@@ -147,7 +147,7 @@ public sealed class ElicitationField
         value = ParseValue();
         if (value is null)
         {
-            error = $"Enter a valid {_schema.Value<string>("type")} for {Name}.";
+            error = $"请输入符合 {_schema.Value<string>("type")} 要求的 {Name} 值。";
             return false;
         }
 
@@ -157,7 +157,7 @@ public sealed class ElicitationField
         }
         catch (Exception ex) when (ex is ArgumentException || ex is FormatException || ex is InvalidCastException || ex is OverflowException)
         {
-            error = $"The server supplied invalid constraints for {Name}. Choose Decline or Cancel.";
+            error = $"服务器为 {Name} 提供了无效的约束。请选择“拒绝”或“取消”。";
         }
 
         return error.Length == 0;
@@ -252,7 +252,7 @@ public sealed class ElicitationField
     private string ValidateValue(JToken value)
     {
         return _schema[EnumValue] is JArray choices && !choices.Any(v => JToken.DeepEquals(v, value))
-            ? $"Choose a listed value for {Name}."
+            ? $"请为 {Name} 选择一个列表中的值。"
             : _schema.Value<string>(TypeValue) switch
         {
             StringValue => ValidateString(),
@@ -268,7 +268,7 @@ public sealed class ElicitationField
         int length = CountCodePoints(Value);
         if ((_schema.Value<int?>("minLength") is int min && length < min) || (_schema.Value<int?>("maxLength") is int max && length > max))
         {
-            return $"The length of {Name} does not meet the requested limits.";
+            return $"{Name} 的长度不符合要求的限制。";
         }
 
         string patternError = ValidatePattern();
@@ -277,7 +277,7 @@ public sealed class ElicitationField
             return patternError;
         }
 
-        return IsValidFormat() ? string.Empty : $"Enter a valid {_schema.Value<string>("format")} for {Name}.";
+        return IsValidFormat() ? string.Empty : $"请输入符合 {_schema.Value<string>("format")} 格式要求的 {Name} 值。";
     }
 
     /// <summary>Performs ValidatePattern.</summary>
@@ -288,16 +288,16 @@ public sealed class ElicitationField
         {
             if (_schema.Value<string>("pattern") is string pattern && !Regex.IsMatch(Value, pattern, RegexOptions.None, TimeSpan.FromMilliseconds(PatternTimeoutMilliseconds)))
             {
-                return $"{Name} does not match the requested pattern.";
+                return $"{Name} 与要求的模式不匹配。";
             }
         }
         catch (ArgumentException)
         {
-            return $"The server supplied an invalid pattern for {Name}. Choose Decline or Cancel.";
+            return $"服务器为 {Name} 提供了无效的模式。请选择“拒绝”或“取消”。";
         }
         catch (RegexMatchTimeoutException)
         {
-            return $"The pattern for {Name} could not be validated. Choose Decline or Cancel.";
+            return $"无法校验 {Name} 的模式。请选择“拒绝”或“取消”。";
         }
 
         return string.Empty;
@@ -324,7 +324,7 @@ public sealed class ElicitationField
         {
             if (_schema.Value<decimal?>(key) is decimal limit && !MeetsLimit(key, value, limit))
             {
-                return $"{Name} does not meet the requested numeric limits.";
+                return $"{Name} 不符合要求的数值范围。";
             }
         }
 

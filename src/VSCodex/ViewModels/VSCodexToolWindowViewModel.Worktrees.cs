@@ -55,20 +55,20 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (!CanEditSettings)
         {
-            Status = "Wait for the active task to finish before managing worktrees.";
+            Status = "请等待当前任务结束再管理工作树。";
             return;
         }
 
         string workspace = _workspace.CurrentWorkspaceRoot;
         if (string.IsNullOrWhiteSpace(workspace) || !Directory.Exists(workspace))
         {
-            Status = "Open a repository folder or solution before managing worktrees.";
+            Status = "管理工作树前请先打开仓库文件夹或解决方案。";
             return;
         }
 
         try
         {
-            Status = "Updating local Git worktrees...";
+            Status = "正在更新本地 Git 工作树……";
             IReadOnlyList<ManagedWorktree> items = await Task.Run(() =>
             {
                 operation?.Invoke(workspace);
@@ -77,17 +77,17 @@ public sealed partial class VSCodexToolWindowViewModel
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
             if (!string.Equals(workspace, _workspace.CurrentWorkspaceRoot, StringComparison.OrdinalIgnoreCase))
             {
-                Status = "Workspace changed; refresh worktrees for the new workspace.";
+                Status = "工作区已变更；请为新工作区刷新工作树。";
                 return;
             }
 
             Replace(Worktrees, items);
-            Status = "Local worktrees refreshed. Archives retain a full recovery snapshot and checkout.";
+            Status = "本地工作树已刷新。归档会保留完整的恢复快照与检出。";
         }
         catch (Exception exception)
         {
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-            Status = $"Worktree operation failed: {exception.Message}";
+            Status = $"工作树操作失败：{exception.Message}";
         }
     }
 
@@ -109,7 +109,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
         catch (Exception exception)
         {
-            Status = $"Cannot open worktree folder: {exception.Message}";
+            Status = $"无法打开工作树文件夹：{exception.Message}";
         }
     }
 }

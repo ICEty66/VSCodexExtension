@@ -89,16 +89,16 @@ public sealed partial class VSCodexToolWindowViewModel
             List<LocalAutomation>? latest = await Task.Run(() => _automationCoordinator.TryUpdate(mutation));
             if (latest is null)
             {
-                AutomationStatus = "Another Visual Studio instance is updating automations. Retry this action; schedules refresh on the next poll.";
+                AutomationStatus = "另一个 Visual Studio 实例正在更新自动化。请重试该操作；计划会在下次轮询时刷新。";
                 return;
             }
 
             Replace(Automations, latest);
-            AutomationStatus = "Automation state saved. New schedules are paused until enabled.";
+            AutomationStatus = "自动化状态已保存。新建计划在启用前处于暂停状态。";
         }
         catch (Exception exception)
         {
-            AutomationStatus = $"Automation could not be saved: {exception.Message}";
+            AutomationStatus = $"无法保存自动化：{exception.Message}";
         }
     }
 
@@ -108,7 +108,7 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (string.IsNullOrWhiteSpace(AutomationName) || string.IsNullOrWhiteSpace(AutomationPrompt) || AutomationMinutes <= 0 || !Directory.Exists(_workspace.CurrentWorkspaceRoot))
         {
-            AutomationStatus = "Enter a name, prompt, positive interval and open an existing workspace.";
+            AutomationStatus = "请输入名称、提示词与正数间隔，并打开一个已存在的工作区。";
             return Task.CompletedTask;
         }
 
@@ -192,7 +192,7 @@ public sealed partial class VSCodexToolWindowViewModel
         }
         catch (Exception exception)
         {
-            AutomationStatus = $"Automation scheduler failed: {exception.Message}";
+            AutomationStatus = $"自动化调度失败：{exception.Message}";
         }
     }
 

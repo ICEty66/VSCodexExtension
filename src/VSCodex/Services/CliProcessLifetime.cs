@@ -50,7 +50,7 @@ internal sealed class CliProcessLifetime : IDisposable
         {
             int error = Marshal.GetLastWin32Error();
             process.Kill();
-            throw new Win32Exception(error, "Cannot create the Codex CLI process job.");
+            throw new Win32Exception(error, "无法创建 Codex CLI 进程作业。");
         }
 
         if (ConfigureJob(job) && AssignProcessToJobObject(job, process.Handle))
@@ -65,7 +65,7 @@ internal sealed class CliProcessLifetime : IDisposable
             process.Kill();
         }
 
-        throw new Win32Exception(failure, "Cannot own the Codex CLI process tree.");
+        throw new Win32Exception(failure, "无法接管 Codex CLI 进程树。");
     }
 
     /// <summary>Configures the documented native extended-limit buffer.</summary>

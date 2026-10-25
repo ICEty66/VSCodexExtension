@@ -41,6 +41,6 @@ internal static class RunFailureMessageFormatter
             message = message.Remove(newline);
         }
 
-        return string.IsNullOrWhiteSpace(message) ? "Codex could not finish this request." : message;
+        return string.IsNullOrWhiteSpace(message) ? "Codex 未能完成此请求。" : message;
     }
 }

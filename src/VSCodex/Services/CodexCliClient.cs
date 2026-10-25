@@ -73,13 +73,13 @@ public sealed class CodexCliClient(ISettingsStore settings) : ICodexClient
             await Task.Run(() => process.WaitForExit()).ConfigureAwait(false);
             if (_cancelled)
             {
-                throw new OperationCanceledException("Codex CLI execution was stopped.");
+                throw new OperationCanceledException("Codex CLI 执行已停止。");
             }
 
             if (process.ExitCode != 0 || stdinException is not null || parser.Failure is not null || !parser.Completed)
             {
                 string details = TrimForUi(parser.Failure ?? error.ToString());
-                throw new CodexRunFailureException($"Codex CLI exited with code {process.ExitCode}: {details}", stdinException ?? new InvalidOperationException(details));
+                throw new CodexRunFailureException($"Codex CLI 已退出，返回代码 {process.ExitCode}：{details}", stdinException ?? new InvalidOperationException(details));
             }
 
             return new CodexRunResult { ThreadId = parser.ThreadId, FinalResponse = parser.FinalResponse, RawJson = parser.RawJson, UsedFallback = true };
@@ -104,7 +104,7 @@ public sealed class CodexCliClient(ISettingsStore settings) : ICodexClient
     /// <returns>A failed task.</returns>
     public Task<JObject> SteerAsync(string threadId, string prompt)
     {
-        return Task.FromException<JObject>(new NotSupportedException("The Codex CLI fallback does not support steering an active turn."));
+        return Task.FromException<JObject>(new NotSupportedException("Codex CLI 回退路径不支持引导正在进行的回合。"));
     }
 
     /// <summary>Interrupts the active CLI process.</summary>
@@ -122,7 +122,7 @@ public sealed class CodexCliClient(ISettingsStore settings) : ICodexClient
     /// <returns>A failed task.</returns>
     public Task<JObject> RespondToServerRequestAsync(JToken requestId, JObject result)
     {
-        return Task.FromException<JObject>(new NotSupportedException("The Codex CLI fallback does not expose app-server approval requests."));
+        return Task.FromException<JObject>(new NotSupportedException("Codex CLI 回退路径不提供应用服务器的审批请求。"));
     }
 
     /// <summary>Cancels the active CLI process without blocking.</summary>
@@ -222,7 +222,7 @@ public sealed class CodexCliClient(ISettingsStore settings) : ICodexClient
             return;
         }
 
-        throw new InvalidOperationException("VSCodex cannot run because Visual Studio has not provided a solution or project workspace root yet.");
+        throw new InvalidOperationException("VSCodex 无法运行，因为 Visual Studio 尚未提供解决方案或项目工作区根目录。");
     }
 
     /// <summary>Creates the process start information.</summary>
@@ -245,14 +245,14 @@ public sealed class CodexCliClient(ISettingsStore settings) : ICodexClient
     {
         try
         {
-            return Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start Codex CLI.");
+            return Process.Start(startInfo) ?? throw new InvalidOperationException("无法启动 Codex CLI。");
         }
         catch (Win32Exception innerException)
         {
             var message = new StringBuilder();
-            _ = message.Append("Codex CLI executable was not found. This is the optional VSCodex fallback transport. ");
-            _ = message.Append("Install it on Windows with `npm install -g @openai/codex`, restart Visual Studio, or set the ");
-            _ = message.Append("VSCodex Codex CLI Path setting to the full codex.cmd path. Current value: ");
+            _ = message.Append("未找到 Codex CLI 可执行文件。它是 VSCodex 的可选回退传输方式。");
+            _ = message.Append("在 Windows 上可用 `npm install -g @openai/codex` 安装，随后重启 Visual Studio，或将");
+            _ = message.Append("VSCodex 的 Codex CLI 路径设置指向 codex.cmd 的完整路径。当前值：");
             _ = message.Append(_settings.Current.CodexCliPath);
             throw new InvalidOperationException(message.ToString(), innerException);
         }

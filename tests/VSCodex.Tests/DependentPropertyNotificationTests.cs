@@ -43,7 +43,7 @@ public sealed class DependentPropertyNotificationTests
         await Assert.That(names).Contains(nameof(PrerequisiteStatus.CanCopyCommand));
         names.Clear();
         status.Status = "not found";
-        await Assert.That(status.ActionButtonText).IsEqualTo("Install");
+        await Assert.That(status.ActionButtonText).IsEqualTo("安装");
         await Assert.That(names).Contains(nameof(PrerequisiteStatus.ActionButtonText));
     }
 

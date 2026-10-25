@@ -89,13 +89,13 @@ public sealed partial class VSCodexToolWindowViewModel
     private const string ActionText = "Action";
 
     /// <summary>Named string used by this type.</summary>
-    private const string CheckingVSCodexPrerequisitesText = "Checking VSCodex prerequisites...";
+    private const string CheckingVSCodexPrerequisitesText = "正在检查 VSCodex 前置条件……";
 
     /// <summary>Named string used by this type.</summary>
     private const string ToolsText = "Tools";
 
     /// <summary>Named string used by this type.</summary>
-    private const string VSCodexSettingsAreLockedWhileATaskIsRunnText = "VSCodex settings are locked while a task is running";
+    private const string VSCodexSettingsAreLockedWhileATaskIsRunnText = "任务运行期间 VSCodex 设置被锁定";
 
     /// <summary>Named string used by this type.</summary>
     private const string WeeklyText = "Weekly";
@@ -263,13 +263,13 @@ public sealed partial class VSCodexToolWindowViewModel
     private string _newSkillDescription = string.Empty;
 
     /// <summary>Stores the rate-limit update text.</summary>
-    private string _rateLimitUpdatedAt = "Waiting for Codex rate-limit telemetry";
+    private string _rateLimitUpdatedAt = "等待 Codex 速率限制遥测";
 
     /// <summary>Stores the Codex setup instructions.</summary>
     private string _codexSetupInstructions = string.Empty;
 
     /// <summary>Stores the voice input status.</summary>
-    private string _voiceInputStatus = "Voice input ready";
+    private string _voiceInputStatus = "语音输入已就绪";
 
     /// <summary>Stores the voice transcript revision.</summary>
     private int _voiceTranscriptRevision;

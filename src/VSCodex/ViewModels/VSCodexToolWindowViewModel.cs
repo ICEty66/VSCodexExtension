@@ -47,7 +47,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         }
         else if (string.IsNullOrWhiteSpace(_workspace.CurrentWorkspaceRoot))
         {
-            Status = "Visual Studio project context is still loading";
+            Status = "Visual Studio 项目上下文仍在加载";
             return;
         }
 
@@ -107,7 +107,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         if (!IsRunning || string.IsNullOrWhiteSpace(ThreadId))
         {
             Prompt = userPrompt;
-            Status = "Steer is available after the active Codex turn has started.";
+            Status = "当前 Codex 回合开始后才能进行引导。";
             return;
         }
 
@@ -116,19 +116,19 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
             string? threadId = ThreadId;
             if (threadId is null || threadId.Trim().Length == 0)
             {
-                throw new InvalidOperationException("The active Codex turn has no thread identifier.");
+                throw new InvalidOperationException("当前 Codex 回合没有线程标识。");
             }
 
             await _codex.SteerAsync(threadId, userPrompt).ConfigureAwait(continueOnCapturedContext: false);
             _ = AddMessage(CodexMessageRole.User, userPrompt);
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-            Status = "Guidance added to the active Codex turn.";
+            Status = "已向当前 Codex 回合添加引导。";
         }
         catch (Exception ex)
         {
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
             Prompt = userPrompt;
-            Status = $"Could not steer the active turn: {ex.Message}";
+            Status = $"无法引导当前回合：{ex.Message}";
         }
     }
 
@@ -166,13 +166,13 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         QueuedPromptCount = _queuedPrompts.Count;
         if (_isProcessingRunQueue)
         {
-            Status = $"Queued VSCodex request ({QueuedPromptCount} waiting). You can keep editing the next prompt.";
+            Status = $"已排队 VSCodex 请求（{QueuedPromptCount} 条等待中）。你可以继续编辑下一条提示词。";
             return;
         }
 
         _isProcessingRunQueue = true;
         IsRunning = true;
-        Status = "Running VSCodex...";
+        Status = "VSCodex 正在运行……";
         TaskObserver.FireAndForget(_joinableTaskFactory.RunAsync((Func<Task>)ProcessRunQueueAsync).Task);
     }
 
@@ -186,13 +186,13 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         {
             await _codex.InterruptAsync(ThreadId).ConfigureAwait(continueOnCapturedContext: false);
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
-            Status = (HasQueuedPrompts ? "Stopped the active VSCodex turn; queued follow-ups are preserved." : "Stopped the active VSCodex turn.");
+            Status = (HasQueuedPrompts ? "已停止当前 VSCodex 回合；已排队的后续消息已保留。" : "已停止当前 VSCodex 回合。");
         }
         catch (Exception ex)
         {
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
             _stopRequested = false;
-            Status = $"Could not stop the active VSCodex turn: {ex.Message}";
+            Status = $"无法停止当前 VSCodex 回合：{ex.Message}";
         }
     }
 
@@ -203,14 +203,14 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
         if (!IsRunning || string.IsNullOrWhiteSpace(ThreadId) || string.IsNullOrWhiteSpace(_activeTurnId))
         {
-            Status = "Pause is available after the active Codex turn has started.";
+            Status = "当前 Codex 回合开始后才能暂停。";
             return;
         }
 
         string threadId = ThreadId ?? string.Empty;
         ReactiveMemoryPauseCheckpoint checkpoint = CreatePauseCheckpoint(threadId);
         _pauseRequested = true;
-        Status = "Interrupting the active turn before saving its ReactiveMemory checkpoint...";
+        Status = "正在中断当前回合，并保存其 ReactiveMemory 检查点……";
         try
         {
             await _codex.InterruptAsync(threadId).ConfigureAwait(continueOnCapturedContext: false);
@@ -220,14 +220,14 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
             {
                 _pauseRequested = false;
                 _stopRequested = true;
-                Status = $"The turn was interrupted, but its ReactiveMemory checkpoint was not saved: {saved.Message}";
+                Status = $"回合已中断，但其 ReactiveMemory 检查点未保存：{saved.Message}";
                 _ = AddMessage(CodexMessageRole.Error, Status, persist: false);
                 return;
             }
 
             _pausedCheckpoint = saved.Checkpoint;
             IsPaused = true;
-            Status = "Paused. Context and queued follow-ups are saved in ReactiveMemory.";
+            Status = "已暂停。上下文与排队的后续消息已保存到 ReactiveMemory。";
             _ = AddMessage(CodexMessageRole.Memory, Status, persist: false);
         }
         catch (Exception ex)
@@ -235,7 +235,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
             _pauseRequested = false;
             _stopRequested = true;
-            Status = $"Pause failed: {ex.Message}";
+            Status = $"暂停失败：{ex.Message}";
             _ = AddMessage(CodexMessageRole.Error, Status, persist: false);
         }
     }
@@ -259,7 +259,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
             ThreadId = threadId,
             TurnId = _activeTurnId,
             OperationId = _activeOperationId,
-            PauseReason = "User paused the active VSCodex turn.",
+            PauseReason = "用户暂停了当前 VSCodex 回合。",
             Prompt = _activePrompt,
             PartialResponse = _activeStreamingResponse?.Detail ?? lastAssistant?.Content ?? string.Empty,
             Context = BuildPauseContext()
@@ -276,11 +276,11 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         ReactiveMemoryPauseCheckpoint? checkpoint = _pausedCheckpoint;
         if (!IsPaused || checkpoint is null)
         {
-            Status = "There is no paused VSCodex checkpoint to resume.";
+            Status = "没有可恢复的已暂停 VSCodex 检查点。";
             return;
         }
 
-        Status = "Restoring the paused context from ReactiveMemory...";
+        Status = "正在从 ReactiveMemory 还原暂停的上下文……";
         ReactiveMemoryPauseCheckpointResult restored = await _reactiveMemory.RestorePauseCheckpointAsync(
             new ReactiveMemoryPauseCheckpointQuery
             {
@@ -299,7 +299,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
         if (!restored.Success || restored.Checkpoint is null)
         {
-            Status = $"Could not restore the paused ReactiveMemory checkpoint: {restored.Message}";
+            Status = $"无法还原暂停的 ReactiveMemory 检查点：{restored.Message}";
             return;
         }
 
@@ -326,7 +326,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         IsPaused = false;
         _isProcessingRunQueue = true;
         IsRunning = true;
-        Status = "Resuming VSCodex from its ReactiveMemory checkpoint...";
+        Status = "正在从 ReactiveMemory 检查点恢复 VSCodex……";
         TaskObserver.FireAndForget(_joinableTaskFactory.RunAsync((Func<Task>)ProcessRunQueueAsync).Task);
     }
 
@@ -337,14 +337,14 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
     {
         string separator = Environment.NewLine + Environment.NewLine;
         return string.Concat(
-            "Resume the interrupted task from the durable ReactiveMemory checkpoint. ",
-            "Continue the original request without repeating completed work.",
+            "从持久化的 ReactiveMemory 检查点继续被打断的任务。 ",
+            "继续原始请求，不要重复已完成的工作。",
             separator,
-            "Original request:",
+            "原始请求：",
             Environment.NewLine,
             checkpoint.Prompt,
             separator,
-            "Saved context:",
+            "已保存的上下文：",
             Environment.NewLine,
             checkpoint.Context);
     }
@@ -404,7 +404,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         _pendingUserActivityPromptToSuppress = context.Prompt;
 
         IDisposable progressSubscription = StartRunProgress(
-            $"Preparing request for {context.WorkspaceRoot}");
+            $"正在为 {context.WorkspaceRoot} 准备请求");
         try
         {
             await ExecuteQueuedPromptAsync(context).ConfigureAwait(continueOnCapturedContext: false);
@@ -435,7 +435,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         {
             _ = AddMessage(
                 CodexMessageRole.Error,
-                "VSCodex cannot run because Visual Studio has not provided a solution or repository folder project root yet.");
+                "VSCodex 无法运行，因为 Visual Studio 尚未提供解决方案或仓库文件夹的项目根目录。");
             return null;
         }
 
@@ -506,8 +506,8 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
     private async Task ExecuteQueuedPromptAsync(QueuedPromptContext context)
     {
         Status = QueuedPromptCount > 0
-            ? $"Running VSCodex ({QueuedPromptCount} queued). You can keep editing the next prompt."
-            : "Running VSCodex...";
+            ? $"VSCodex 正在运行（{QueuedPromptCount} 条已排队）。你可以继续编辑下一条提示词。"
+            : "VSCodex 正在运行……";
         _ = AddMessage(CodexMessageRole.User, context.Prompt);
         AddRunSetupActivities(context);
         ReactiveMemoryCallResult memoryReaction =
@@ -517,7 +517,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         _activeOperationId = request.OperationId;
         _activePrompt = context.Prompt;
         await UpdateModelEstimateAsync(request).ConfigureAwait(continueOnCapturedContext: false);
-        SetRunProgress("Sending request to Codex. Longer project analysis can take several minutes.");
+        SetRunProgress("正在向 Codex 发送请求。较大规模的项目分析可能需要几分钟。");
         Task<CodexRunResult> runTask = context.Options.UseMultiAgentOrchestration
             ? _taskOrchestrator.RunAsync(request)
             : _codex.RunAsync(request);
@@ -537,20 +537,20 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
     {
         _ = AddRunActivity(
             RunActivityKind.Agent,
-            "Run started",
+            "开始运行",
             $"Mode: {context.Options.Mode}{Environment.NewLine}Model: {context.Options.Model}");
         AddNamedRunActivities(
             context.SelectedAgents.Select((agent) => $"- {agent.Name} ({agent.Role})"),
             RunActivityKind.Agent,
-            "Selected agents");
+            "已选智能体");
         AddNamedRunActivities(
             context.Skills.Select((skill) => $"- {skill.Name}"),
             RunActivityKind.Skill,
-            "Enabled skills");
+            "已启用的技能");
         AddNamedRunActivities(
             context.McpServers.Select((server) => $"- {server.Name}"),
             RunActivityKind.Mcp,
-            "Available MCP servers");
+            "可用的 MCP 服务器");
     }
 
     /// <summary>Adds a run activity when the supplied values are not empty.</summary>
@@ -576,24 +576,24 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
     /// <returns>The ReactiveMemory result.</returns>
     private async Task<ReactiveMemoryCallResult> ReactToMemoryAsync(QueuedPromptContext context)
     {
-        SetRunProgress("Updating ReactiveMemory context");
+        SetRunProgress("正在更新 ReactiveMemory 上下文");
         ReactiveMemoryCallResult reaction = await _reactiveMemory.ReactToPromptAsync(
             context.Prompt,
             context.WorkspaceIdentity,
             context.ThreadId).ConfigureAwait(continueOnCapturedContext: false);
         SetRunProgress(reaction.Success
             ? reaction.Message
-            : "ReactiveMemory unavailable; continuing with local context");
+            : "ReactiveMemory 不可用，改用本地上下文继续");
         _ = AddRunActivity(
             RunActivityKind.Mcp,
-            "ReactiveMemory prompt context",
+            "ReactiveMemory 提示上下文",
             reaction.Message,
             string.Empty);
         if (!string.IsNullOrWhiteSpace(reaction.ContextText))
         {
             _ = AddMessage(
                 CodexMessageRole.Memory,
-                "Recovered ReactiveMemory context for this project.",
+                "已恢复该项目的 ReactiveMemory 上下文。",
                 persist: false);
         }
 
@@ -608,13 +608,13 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         QueuedPromptContext context,
         ReactiveMemoryCallResult memoryReaction)
     {
-        SetRunProgress("Resolving VSCodex references and attachments");
+        SetRunProgress("正在解析 VSCodex 引用与附件");
         List<WorkspaceFileReference> workspaceFiles = await Task.Run(
             () => ResolveWorkspaceFiles(context)).ConfigureAwait(continueOnCapturedContext: false);
         AddNamedRunActivities(
             workspaceFiles.Select((file) => $"- {file.ReferenceKey}"),
             RunActivityKind.Agent,
-            "Resolved prompt references");
+            "已解析提示词引用");
         IReadOnlyList<MemoryEntry> memories = await Task.Run(
             () => _memoryStore.Search(context.Prompt, Numeric10))
             .ConfigureAwait(continueOnCapturedContext: false);
@@ -686,12 +686,12 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
             persist: true,
             _activeStreamingResponse is null);
         await SaveRunDiaryAsync(context, result).ConfigureAwait(continueOnCapturedContext: false);
-        SetRunProgress("Collecting changed files");
+        SetRunProgress("正在收集更改的文件");
         IReadOnlyList<ChangedFileActivity> changedFiles = await Task.Run(
             () => CollectChangedFilesForWorkspace(context.WorkspaceRoot))
             .ConfigureAwait(continueOnCapturedContext: false);
         AddChangedFilesActivity(changedFiles);
-        FinishRunProgress(result.UsedFallback ? "Completed using CLI fallback" : "Completed");
+        FinishRunProgress(result.UsedFallback ? "已通过 CLI 回退完成" : "Completed");
         CompleteQueuedPromptOnUiThread(context, result);
     }
 
@@ -712,14 +712,14 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
             _activeStreamingResponse.Detail = responses[0];
             if (responses.Count > 1)
             {
-                _activeStreamingResponse.Title = "Earlier assistant response";
+                _activeStreamingResponse.Title = "更早的助手回复";
                 _activeStreamingResponse.IsExpanded = false;
                 _ = AddMessage(CodexMessageRole.Assistant, responses[0], persist: true, appendToActivity: false);
-                _activeStreamingResponse = AddRunActivity(RunActivityKind.Assistant, "Final assistant response", responses[1]);
+                _activeStreamingResponse = AddRunActivity(RunActivityKind.Assistant, "最终助手回复", responses[1]);
             }
             else
             {
-                _activeStreamingResponse.Title = "Final assistant response";
+                _activeStreamingResponse.Title = "最终助手回复";
             }
         });
     }
@@ -732,13 +732,13 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         QueuedPromptContext context,
         CodexRunResult result)
     {
-        SetRunProgress("Saving ReactiveMemory diary");
+        SetRunProgress("正在保存 ReactiveMemory 日记");
         ReactiveMemoryCallResult diary = await _reactiveMemory.WriteDiaryAsync(
             context.Prompt,
             result.FinalResponse,
             context.WorkspaceIdentity,
             ThreadId).ConfigureAwait(continueOnCapturedContext: false);
-        _ = AddRunActivity(RunActivityKind.Mcp, "ReactiveMemory diary", diary.Message);
+        _ = AddRunActivity(RunActivityKind.Mcp, "ReactiveMemory 日记", diary.Message);
         if (diary.Success)
         {
             return;
@@ -746,7 +746,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
 
         _ = AddMessage(
             CodexMessageRole.Memory,
-            $"ReactiveMemory diary was not saved: {diary.Message}",
+            $"ReactiveMemory 日记未保存：{diary.Message}",
             persist: false);
     }
 
@@ -759,7 +759,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
     {
         RunOnUiThread(() =>
         {
-            Status = result.UsedFallback ? "Complete using CLI fallback" : "Complete";
+            Status = result.UsedFallback ? "通过 CLI 回退完成" : "Complete";
             context.RunRoot.CompletedAt = _timeProvider.GetLocalNow();
             UpdateRunActivityElapsed(context.RunRoot);
             CompleteRunActivityPresentation(context.RunRoot);
@@ -807,7 +807,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
         var explanation = RunFailureMessageFormatter.Format(exception);
         _ = Microsoft.VisualStudio.Shell.ActivityLog.TryLogError(nameof(VSCodexToolWindowViewModel), exception.ToString());
         FinishRunProgress($"Failed: {explanation}");
-        _ = AddMessage(CodexMessageRole.Error, $"{explanation} Review any changes before retrying. Full diagnostics are in the Visual Studio activity log.");
+        _ = AddMessage(CodexMessageRole.Error, $"{explanation} 重试前请检查已产生的更改。完整诊断信息见 Visual Studio 活动日志。");
         RunOnUiThread(() =>
         {
             context.RunRoot.CompletedAt = _timeProvider.GetLocalNow();
@@ -861,7 +861,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
 
         if (!IsApprovalRequest(request.Method))
         {
-            Status = "This Codex request requires structured input that is not a yes/no approval.";
+            Status = "该 Codex 请求需要结构化输入，而不是简单的“是/否”批准。";
             return;
         }
 
@@ -879,14 +879,14 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
             request.IsPending = false;
             _ = ApprovalRequests.Remove(request);
-            var responseStatus = approve ? "Approved Codex request." : "Declined Codex request.";
-            Status = cancel ? "Cancelled Codex request." : responseStatus;
+            var responseStatus = approve ? "已批准 Codex 请求。" : "已拒绝 Codex 请求。";
+            Status = cancel ? "已取消 Codex 请求。" : responseStatus;
         }
         catch (Exception ex)
         {
             await _joinableTaskFactory.SwitchToMainThreadAsync(default(CancellationToken));
             request.IsPending = true;
-            Status = $"Could not answer the Codex approval request: {ex.Message}";
+            Status = $"无法应答 Codex 审批请求：{ex.Message}";
         }
     }
 
@@ -895,7 +895,7 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
     {
         try
         {
-            Status = "Refreshing VSCodex workspace context...";
+            Status = "正在刷新 VSCodex 工作区上下文……";
             string previousIdentity = _lastWorkspaceIdentityId;
             _workspace.Refresh();
             RaiseWorkspaceDisplayProperties();
@@ -924,13 +924,13 @@ public sealed partial class VSCodexToolWindowViewModel : ReactiveObject, IDispos
                     [Path.Combine(workspaceRoot, ".codex", "skills")]));
             _mcpConfig.Refresh();
             Status = string.IsNullOrWhiteSpace(_workspace.CurrentWorkspaceRoot)
-                ? "Visual Studio project context is still loading"
-                : $"Refreshed VSCodex context for {_workspace.CurrentWorkspaceRoot}";
+                ? "Visual Studio 项目上下文仍在加载"
+                : $"已刷新 {_workspace.CurrentWorkspaceRoot} 的 VSCodex 上下文";
             RefreshRateLimitsInBackground();
         }
         catch (Exception ex)
         {
-            Status = $"Refresh failed: {ex.Message}";
+            Status = $"刷新失败：{ex.Message}";
         }
     }
 }

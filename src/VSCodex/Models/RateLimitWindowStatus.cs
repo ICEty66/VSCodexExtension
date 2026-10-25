@@ -12,7 +12,7 @@ public sealed class RateLimitWindowStatus : ReactiveObject
     private const int Numeric100 = 100;
 
     /// <summary>Stores the remaining text.</summary>
-    private string _remaining = "Waiting for Codex telemetry";
+    private string _remaining = "等待 Codex 遥测数据";
 
     /// <summary>Stores the reset text.</summary>
     private string _resetText = string.Empty;
@@ -24,7 +24,7 @@ public sealed class RateLimitWindowStatus : ReactiveObject
     private bool _hasTelemetry;
 
     /// <summary>Stores the detailed account limit description.</summary>
-    private string _toolTip = "Account limits have not been received from Codex.";
+    private string _toolTip = "尚未从 Codex 收到账户限额信息。";
 
     /// <summary>Gets or sets a value indicating whether this row contains verified account telemetry.</summary>
     public bool HasTelemetry { get => _hasTelemetry; set => this.RaiseAndSetIfChanged(ref _hasTelemetry, value); }

@@ -559,8 +559,8 @@ public sealed partial class VSCodexToolWindowViewModel
     public string ContextWindowSummary
     {
         get => ModelEstimate.ContextWindowTokens > 0
-            ? $"{FormatTokenCount(ModelEstimate.EstimatedInputTokens)} / {FormatTokenCount(ModelEstimate.ContextWindowTokens)} context tokens"
-            : "Context size unavailable";
+            ? $"{FormatTokenCount(ModelEstimate.EstimatedInputTokens)} / {FormatTokenCount(ModelEstimate.ContextWindowTokens)} 上下文 token"
+            : "上下文大小不可用";
     }
 
     /// <summary>Gets the context Remaining Summary.</summary>
@@ -799,7 +799,7 @@ public sealed partial class VSCodexToolWindowViewModel
     {
         if (identity is null || string.IsNullOrWhiteSpace(identity.RootPath))
         {
-            return "Project: open a Visual Studio solution or repository folder";
+            return "项目：请打开 Visual Studio 解决方案或仓库文件夹";
         }
 
         string name = string.IsNullOrWhiteSpace(identity.Name) ? workspaceName : identity.Name;

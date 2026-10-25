@@ -73,7 +73,7 @@ public sealed class ManagedWorktreeService
             using FileStream lease = AcquireLease();
             if (string.IsNullOrWhiteSpace(branch) || !branch.StartsWith("CP_", StringComparison.Ordinal))
             {
-                throw new InvalidOperationException("Enter a new branch beginning with CP_.");
+                throw new InvalidOperationException("请以 CP_ 开头输入新分支名。");
             }
 
             _ = Git(workspace, "check-ref-format", "--branch", branch);
@@ -105,7 +105,7 @@ public sealed class ManagedWorktreeService
             string destination = item.IsArchived ? item.OriginalPath : System.IO.Path.Combine(_storageRoot, ArchiveDirectory, item.Id);
             if (Directory.Exists(destination) || File.Exists(destination))
             {
-                throw new InvalidOperationException("The destination already exists; the checkout has not been moved.");
+                throw new InvalidOperationException("目标位置已存在；检出未被移动。");
             }
 
             string snapshot = CreateSnapshot(item);
@@ -156,7 +156,7 @@ public sealed class ManagedWorktreeService
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8
         };
-        using var process = Process.Start(start) ?? throw new InvalidOperationException("Git could not be started.");
+        using var process = Process.Start(start) ?? throw new InvalidOperationException("无法启动 Git。");
         StringBuilder output = new();
         StringBuilder errors = new();
         process.OutputDataReceived += (_, args) =>
@@ -183,7 +183,7 @@ public sealed class ManagedWorktreeService
         string detail = errors.ToString();
         if (process.ExitCode != 0)
         {
-            throw new InvalidOperationException($"Git worktree operation failed: {detail.Trim()}");
+            throw new InvalidOperationException($"Git 工作树操作失败：{detail.Trim()}");
         }
 
         return output.ToString().Replace("\r\n", "\n").TrimEnd('\n');
@@ -196,7 +196,7 @@ public sealed class ManagedWorktreeService
     {
         if (value.IndexOfAny(['"', '\r', '\n', '\0']) >= 0)
         {
-            throw new ArgumentException("Git arguments cannot contain quotes or control line characters.", nameof(value));
+            throw new ArgumentException("Git 参数不能包含引号或控制行字符。", nameof(value));
         }
 
         string trimmed = value.TrimEnd('\\');
@@ -239,7 +239,7 @@ public sealed class ManagedWorktreeService
         {
             if ((File.GetAttributes(entry) & FileAttributes.ReparsePoint) != 0)
             {
-                throw new InvalidOperationException($"Recovery cannot be guaranteed for linked files or directories: {entry}");
+                throw new InvalidOperationException($"链接文件或目录无法保证可恢复：{entry}");
             }
 
             if (IsGitMetadata(entry, linkedRoot))
@@ -277,7 +277,7 @@ public sealed class ManagedWorktreeService
             return true;
         }
 
-        throw new InvalidOperationException($"Embedded repositories cannot be archived: {entry}");
+        throw new InvalidOperationException($"无法归档内嵌仓库：{entry}");
     }
 
     /// <summary>Hashes a regular file without text decoding.</summary>
@@ -299,7 +299,7 @@ public sealed class ManagedWorktreeService
         string[] files = SafeFiles(checkout).ToArray();
         if (files.Length != expected.Count || files.Any(file => !expected.TryGetValue(file.Substring(checkout.Length), out string? hash) || hash != Hash(file)))
         {
-            throw new IOException($"Checkout changed during archival; retained recovery snapshot: {snapshot}");
+            throw new IOException($"归档过程中检出发生变化；已保留恢复快照：{snapshot}");
         }
 
         string index = Git(checkout, RevisionCommand, GitPathOption, IndexFile);
@@ -309,7 +309,7 @@ public sealed class ManagedWorktreeService
             return;
         }
 
-        throw new IOException($"Git staging index changed during archival; retained recovery snapshot: {snapshot}");
+        throw new IOException($"归档过程中 Git 暂存索引发生变化；已保留恢复快照：{snapshot}");
     }
 
     /// <summary>Refuses link traversal through a directory and its ancestors.</summary>
@@ -321,7 +321,7 @@ public sealed class ManagedWorktreeService
         {
             if ((directory.Attributes & FileAttributes.ReparsePoint) != 0)
             {
-                throw new IOException("Managed worktrees cannot use linked directories.");
+                throw new IOException("托管工作树不能使用链接目录。");
             }
 
             directory = directory.Parent;
@@ -364,7 +364,7 @@ public sealed class ManagedWorktreeService
     {
         string path = System.IO.Path.Combine(_storageRoot, RegistryFile);
         return File.Exists(path)
-            ? JsonConvert.DeserializeObject<List<ManagedWorktree>>(File.ReadAllText(path)) ?? throw new IOException("Worktree registry is empty or corrupt.")
+            ? JsonConvert.DeserializeObject<List<ManagedWorktree>>(File.ReadAllText(path)) ?? throw new IOException("工作树注册信息为空或已损坏。")
             : new List<ManagedWorktree>();
     }
 
@@ -397,7 +397,7 @@ public sealed class ManagedWorktreeService
         string expected = System.IO.Path.Combine(_storageRoot, item.IsArchived ? ArchiveDirectory : ActiveDirectory, item.Id);
         if (!Guid.TryParseExact(item.Id, "N", out _) || !Same(item.Path, expected) || !Same(item.OriginalPath, System.IO.Path.Combine(_storageRoot, ActiveDirectory, item.Id)))
         {
-            throw new InvalidOperationException("Worktree ownership or storage boundary is invalid.");
+            throw new InvalidOperationException("工作树的归属或存储边界无效。");
         }
 
         return item;
@@ -413,7 +413,7 @@ public sealed class ManagedWorktreeService
         ManagedWorktree registered = ListCore(workspace).Single(x => Same(x.Path, item.Path));
         if (Same(active, item.Path) || item.IsPinned || registered.IsLocked || !File.Exists(System.IO.Path.Combine(item.Path, ".git")))
         {
-            throw new InvalidOperationException("Active, primary, pinned or Git-locked/shared checkouts cannot be moved.");
+            throw new InvalidOperationException("活动、主、已固定或被 Git 锁定/共享的检出无法移动。");
         }
 
         if (!Git(item.Path, "ls-files", "--stage").Split('\n').Any(line => line.StartsWith("160000 ", StringComparison.Ordinal)))
@@ -421,7 +421,7 @@ public sealed class ManagedWorktreeService
             return;
         }
 
-        throw new InvalidOperationException("Worktrees containing submodules cannot be archived safely.");
+        throw new InvalidOperationException("包含子模块的工作树无法安全归档。");
     }
 
     /// <summary>Obtains exclusive cross-process access and rejects linked storage ancestry.</summary>
